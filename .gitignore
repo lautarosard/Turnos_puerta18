@@ -1,0 +1,51 @@
+# ==========================================================
+# Node.js / Express
+# ==========================================================
+
+# 1. Dependencias (¡El más importante!)
+# Esta carpeta se regenera al 100% ejecutando "npm install".
+# Nunca la subas a Git.
+/node_modules
+
+# 2. Archivos de Entorno (¡SECRETO!)
+# Contienen contraseñas de bases de datos, API keys, etc.
+# NUNCA deben estar en el repositorio.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 3. Logs
+# Archivos de registro que se generan en tiempo de ejecución.
+*.log
+npm-debug.log*
+yarn-error.log
+lerna-debug.log
+
+# 4. Archivos de Sistema Operativo (macOS, Windows)
+.DS_Store
+Thumbs.db
+
+# 5. Carpetas de Build (Si en el futuro usas TypeScript)
+# Es donde el código compilado (ej. de .ts a .js) iría.
+/dist
+/build
+/out
+
+# 6. Archivos del IDE / Editor
+# Configuraciones locales de tu editor que no le importan al resto.
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# 7. Reportes de Cobertura de Pruebas
+/coverage
+/reports
+
+# 8. Archivos de caché
+.npm/
+.yarn/cache
