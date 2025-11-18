@@ -2,7 +2,7 @@
 
 // 1. Importamos la Interfaz que definiste en el Domain
 // (Asegúrate de ajustar la ruta si moviste la interfaz a Domain como sugerí)
-import { IUsuarioRepository } from '../../../Domain/repositories/IUsuarioRepositories.js';
+import { IUsuarioRepository } from '../../../Domain/repositories/IUsuarioRepository.js';
 
 // 2. Importamos el cliente 'prisma' y el tipo 'Usuario' desde nuestra config central
 import { prisma, Usuario } from '../../database/client.js';

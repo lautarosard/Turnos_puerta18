@@ -1,10 +1,11 @@
 import { Proyecto } from "./../../Infrastructure/database/client.js";
 
 export interface IProyectoRepository {
-    createProyecto(proyecto: Omit<Proyecto, 'id'>): Promise<Proyecto>;
-    getProyectos(): Promise<Proyecto[]>;
+    create(proyecto: Omit<Proyecto, 'id'>): Promise<Proyecto>;
+    getAll(): Promise<Proyecto[]>;
     getByAdminId(id: string): Promise<Proyecto[]>;
-    getProyectoById(id: number): Promise<Proyecto | null>;
-    updateProyecto(id: number, proyecto: Proyecto): Promise<Proyecto | null>;
-    deleteProyecto(id: number): Promise<Proyecto | null>;
+    getById(id: string): Promise<Proyecto | null>;
+    update(id: string, data: Partial<Proyecto>): Promise<Proyecto | null>;
+    delete(id: string): Promise<Proyecto | null>;
+    exist(name: string): Promise<boolean>;
 }

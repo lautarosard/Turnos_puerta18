@@ -1,7 +1,7 @@
 // src/Application/AuthService.ts
 
 // 1. Importamos el CONTRATO (Interfaz) del Dominio
-import { IUsuarioRepository } from '../../Domain/repositories/IUsuarioRepositories.js';
+import { IUsuarioRepository } from '../../Domain/repositories/IUsuarioRepository.js';
 
 // 2. Importamos las herramientas de Infraestructura
 import bcrypt from 'bcrypt';
