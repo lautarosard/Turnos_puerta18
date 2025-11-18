@@ -1,0 +1,89 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===================================
+//  1. ENTIDAD DE ADMINISTRADORES
+// ===================================
+model Usuario {
+  id       String     @id @default(uuid())
+  email    String     @unique
+  nombre   String
+  password String // Esto se guarda hasheado
+  rol      RoleUsuario @default(ADMIN_PROYECTO)
+
+  // Relación: Un Usuario (Admin) puede manejar MUCHOS Proyectos
+  proyectosEncargados Proyecto[]
+}
+
+// ===================================
+//  2. ENTIDAD DEL PÚBLICO
+// ===================================
+model Visitante {
+  id     String @id @default(uuid())
+  nombre String
+
+  // Relación: Un Visitante puede tener MUCHOS Turnos
+  turnos Turno[]
+}
+
+// ===================================
+//  3. ENTIDAD DE LOS PROYECTOS
+// ===================================
+model Proyecto {
+  id          String  @id @default(uuid())
+  nombre      String  @unique
+  descripcion String? // El '?' significa que es opcional
+  ubicacion   String?
+
+  // Relación: Un Proyecto pertenece a UN Usuario (Admin)
+  adminEncargado   Usuario @relation(fields: [adminEncargadoId], references: [id])
+  adminEncargadoId String // Esta es la "foreign key" (llave foránea)
+
+  // Relación: Un Proyecto puede tener MUCHOS Turnos
+  turnos Turno[]
+}
+
+// ===================================
+//  4. ENTIDAD DE LOS TURNOS
+// ===================================
+model Turno {
+  id         String     @id @default(uuid())
+  estado     EstadoTurno @default(PENDIENTE)
+  creadoEn   DateTime   @default(now())
+  actualizadoEn DateTime   @updatedAt // Se actualiza solo
+
+  // Relación: Un Turno pertenece a UN Visitante
+  visitante   Visitante @relation(fields: [visitanteId], references: [id])
+  visitanteId String
+
+  // Relación: Un Turno pertenece a UN Proyecto
+  proyecto   Proyecto @relation(fields: [proyectoId], references: [id])
+  proyectoId String
+
+  // Hacemos que la combinación de visitante y proyecto PENDIENTE sea única
+  // Esto ayuda a evitar que alguien saque 2 turnos PENDIENTES para el mismo proyecto
+  @@unique([visitanteId, proyectoId, estado])
+}
+
+// ===================================
+//  ENUMS (Tipos predefinidos)
+// ===================================
+
+enum RoleUsuario {
+  ADMIN_PROYECTO
+}
+
+enum EstadoTurno {
+  PENDIENTE
+  LLAMADO    // El admin lo llamó, el visitante debe acercarse
+  FINALIZADO // El visitante ya fue atendido
+  CANCELADO  // El visitante canceló su turno
+}

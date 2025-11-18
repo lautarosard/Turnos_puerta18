@@ -1,0 +1,17 @@
+// tsconfig.json (Actualizado para ES Modules)
+{
+  "compilerOptions": {
+    "target": "ES2022",                  // Actualizado a una versión más moderna
+    "module": "NodeNext",               // <-- El cambio clave
+    "moduleResolution": "NodeNext",     // <-- El cambio clave
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "sourceMap": true,                 // Recomendado para depurar (debug)
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"] // Solo compila los archivos dentro de 'src'
+}
