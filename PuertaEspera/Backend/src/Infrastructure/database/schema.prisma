@@ -56,6 +56,7 @@ model Proyecto {
 // ===================================
 model Turno {
   id         String     @id @default(uuid())
+  numero     Int
   estado     EstadoTurno @default(PENDIENTE)
   creadoEn   DateTime   @default(now())
   actualizadoEn DateTime   @updatedAt // Se actualiza solo
