@@ -105,7 +105,7 @@ app.use('/api/visitantes', visitanteRouter);
 app.use('/api/turnos', turnoRouter);
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+httpServer.listen(PORT, () => {
+    console.log(`Servidor (con Sockets) escuchando en puerto ${PORT}`);
 });
 export { io };
