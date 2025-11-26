@@ -30,6 +30,10 @@ import { PrismaVisitanteRepository } from './Infrastructure/outbound/persistance
 import { VisitanteService } from './Application/services/visitante.service.js';
 import { VisitanteController } from './API/Controllers/visitante.controller.js';
 import { createVisitanteRoutes } from './API/Routes/visitante.routes.js';
+import { PrismaTurnosRepository } from './Infrastructure/outbound/persistance/turnos.repository.js';
+import { TurnoService } from './Application/services/turnos.service.js';
+import { TurnoController } from './API/Controllers/turnos.controller.js';
+import { createTurnoRoutes } from './API/Routes/turnos.routes.js';
 //import { checkRole } from './Infrastructure/middlewares/role.middleware.js'
 
 
@@ -81,6 +85,14 @@ const proyectoService = new ProyectoService(proyectoRepository);
 const proyectoController = new ProyectoController(proyectoService);
 const proyectoRouter = createProyectoRoutes(proyectoController);
 
+//-- Módulo turnos ---
+const turnoRepository = new PrismaTurnosRepository();
+
+// ¡OJO AQUÍ! Le pasamos el 'io' que creamos arriba
+const turnoService = new TurnoService(turnoRepository, io); 
+
+const turnoController = new TurnoController(turnoService);
+const turnoRouter = createTurnoRoutes(turnoController);
 // --- Inyección de Visitantes ---
 const visitanteRepo = new PrismaVisitanteRepository();
 const visitanteService = new VisitanteService(visitanteRepo);
@@ -90,6 +102,7 @@ const visitanteRouter = createVisitanteRoutes(visitanteController);
 app.use('/api/auth', authRouter);
 app.use('/api/proyectos', proyectoRouter);
 app.use('/api/visitantes', visitanteRouter);
+app.use('/api/turnos', turnoRouter);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
