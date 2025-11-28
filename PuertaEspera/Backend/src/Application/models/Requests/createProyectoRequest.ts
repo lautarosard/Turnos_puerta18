@@ -3,4 +3,5 @@ export interface CreateProjectRequest {
     nombre: string;
     descripcion?: string;
     ubicacion?: string;
+    duracionEstimada?: number;
 }

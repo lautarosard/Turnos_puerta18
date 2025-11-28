@@ -7,7 +7,10 @@ export class PrismaProyectoRepository implements IProyectoRepository {
     // 1. Renombramos a 'create' a secas
     async create(data: Omit<Proyecto, 'id'>): Promise<Proyecto> {
         return await prisma.proyecto.create({
-            data: data
+            data: {
+            ...data, // 1. Copiamos nombre, descripción, etc.
+            duracionEstimada: data.duracionEstimada ?? 5 // 2. Definimos la duración AQUÍ DENTRO
+        }
         });
     }
 

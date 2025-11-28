@@ -7,5 +7,6 @@ export interface TurnoResponse {
     estado: EstadoTurno;    // PENDIENTE, LLAMADO, etc.
     fecha: Date;
     visitanteNombre: string; // Para mostrar "Juan" en la pantalla
+    tiempoDeEspera: number;
     proyectoId: string;
 }

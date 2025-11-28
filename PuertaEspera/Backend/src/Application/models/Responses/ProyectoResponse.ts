@@ -3,5 +3,6 @@ export interface ProyectoResponse {
     nombre: string;
     descripcion?: string;
     ubicacion?: string;
+    duracionEstimada?: number;
     adminEncargadoId: string;
 }
