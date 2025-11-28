@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from './../components/ui/button';
 import logo from './../assets/logoPuerta.svg'; // Asegúrate de tener la imagen
 import bgImage from './../assets/background.jpg'; 
+import flameLogo from './../assets/flame-icon.svg';
 
 export function WelcomePage() {
   const navigate = useNavigate();
@@ -35,7 +36,10 @@ export function WelcomePage() {
         </div>
 
         {/* Fueguito (Footer) */}
-        <div className="mt-12 text-2xl">🔥</div>
+        <div className="mt-12 text-2xl">
+        <img src={flameLogo} alt="Puerta 18" className="w-64 mb-10" />
+            
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import cors from 'cors';
 
 // 2. Llama a .config() INMEDIATAMENTE para cargar el .env
 dotenv.config();
@@ -36,7 +37,6 @@ import { TurnoController } from './API/Controllers/turnos.controller.js';
 import { createTurnoRoutes } from './API/Routes/turnos.routes.js';
 //import { checkRole } from './Infrastructure/middlewares/role.middleware.js'
 
-
 // 2. Le damos tipo a 'app'. ¡Ahora sabe que es una app de Express!
 const app: Express = express();
 const PORT: number = 3000; // ¡Ahora 'PORT' tiene tipo!
@@ -67,6 +67,7 @@ io.on('connection', (socket) => {
     });
 });
 
+app.use(cors());
 app.use(express.json());
 
 // ==========================================
