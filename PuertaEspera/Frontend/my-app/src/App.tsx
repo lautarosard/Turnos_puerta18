@@ -1,16 +1,21 @@
-import { useState } from 'react'
-import Navbar from './components/Navbar.tsx'
-import Footer from './components/Footer.tsx'
-function App() {
-
-  const [count, setCount] = useState(0)
-  
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { WelcomePage } from './pages/WelcomePage';
+import { VisitorLoginPage } from './pages/VisitorLoginPage';
+function App() {  
 
   return (
-    <>
-      <Navbar count={count} setCount={setCount} />
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        {/* Ruta raíz: Pantalla de Bienvenida */}
+        <Route path="/" element={<WelcomePage />} />
+        
+        {/* Ruta Login */}
+        <Route path="/login-visitante" element={<VisitorLoginPage />} />
+        
+        {/* Futuras rutas */}
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+      </Routes>
+    </BrowserRouter>
   )
 }
 
