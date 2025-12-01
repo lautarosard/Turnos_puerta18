@@ -4,27 +4,46 @@ import { ITurnoService } from '../interfaces/IService/ITurnoService.js';
 import { ITurnoRepository } from '../../Domain/repositories/ITurnosRepository.js'; 
 import { TurnoResponse } from '../models/Responses/turnoResponse.js';
 import { Turno, EstadoTurno } from '../../Infrastructure/database/client.js';
+import { TurnoRequest } from '../models/Requests/TurnoRequest.js';
+import { IProyectoRepository } from '../../Domain/repositories/IProyectoRepository.js';
 
 export class TurnoService implements ITurnoService {
-    constructor(private turnoRepository: ITurnoRepository, private io: Server) {} 
+    constructor(
+        private turnoRepository: ITurnoRepository, 
+        private io: Server,
+        private proyectoRepository: IProyectoRepository
+        ) {} 
     
-    async solicitarTurno(visitanteId: string, proyectoId: string): Promise<TurnoResponse> {
+    async solicitarTurno(request: TurnoRequest): Promise<TurnoResponse> {
         //validación de turnos
-        const validarTurno = await this.turnoRepository.countTurnosActivos(visitanteId);
+        const validarTurno = await this.turnoRepository.countTurnosActivos(request.visitanteId);
         if(validarTurno >= 2) {
             throw new Error('Limite alcanzado: Ya tienes 2 turnos en espera');
         }
         
-        const turno = await this.turnoRepository.create(
+        const nuevoTurno = await this.turnoRepository.create(
             {
-                visitanteId,
-                proyectoId
+                visitanteId: request.visitanteId,
+                proyectoId: request.proyectoId
             }
         );
 
-        const response = this.mapToResponse(turno);
+        // A. Buscamos el proyecto usando SU repositorio (ya no prisma directo)
+        const proyecto = await this.proyectoRepository.getById(request.proyectoId);
         
-        this.io.to(proyectoId).emit('nuevo-turno', response);
+        // B. Contamos anteriores usando el NUEVO método del repo de turnos
+        const turnosAntes = await this.turnoRepository.countTurnosPendientesPrevios(
+            request.proyectoId, 
+            nuevoTurno.numero
+        );
+
+        // C. Matemática
+        const tiempoEstimado = turnosAntes * (proyecto?.duracionEstimada || 15);
+
+        // 4. Mapear y responder
+        const response = this.mapToResponse(nuevoTurno, tiempoEstimado);
+        
+        this.io.to(request.proyectoId).emit('nuevo-turno', response);
         
         return response;
     }
@@ -41,7 +60,7 @@ export class TurnoService implements ITurnoService {
         return response;
     }
 
-    private mapToResponse(turno: Turno & { visitante?: { nombre: string } | null }): TurnoResponse {
+    private mapToResponse(turno: Turno & { visitante?: { nombre: string } | null }, tiempoEstimado?: number): TurnoResponse {
     
     return {
         id: turno.id,
@@ -49,9 +68,9 @@ export class TurnoService implements ITurnoService {
         estado: turno.estado,
         fecha: turno.creadoEn,
         proyectoId: turno.proyectoId,
-        
+        tiempoDeEspera: tiempoEstimado,
         // Ahora TypeScript ya no se queja porque le avisamos arriba que 'visitante' existe
         visitanteNombre: turno.visitante?.nombre || 'Anónimo' 
-    };
-  }
+        };
+    }
 }

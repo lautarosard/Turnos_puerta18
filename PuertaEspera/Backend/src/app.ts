@@ -90,7 +90,7 @@ const proyectoRouter = createProyectoRoutes(proyectoController);
 const turnoRepository = new PrismaTurnosRepository();
 
 // ¡OJO AQUÍ! Le pasamos el 'io' que creamos arriba
-const turnoService = new TurnoService(turnoRepository, io); 
+const turnoService = new TurnoService(turnoRepository, io, proyectoRepository); 
 
 const turnoController = new TurnoController(turnoService);
 const turnoRouter = createTurnoRoutes(turnoController);

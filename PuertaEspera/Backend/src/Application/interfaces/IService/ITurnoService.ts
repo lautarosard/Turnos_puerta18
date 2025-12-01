@@ -1,10 +1,11 @@
 // src/Application/interfaces/IServices/ITurnoService.ts
 import { TurnoResponse } from '../../models/Responses/turnoResponse.js';
 import { EstadoTurno } from '../../../Infrastructure/database/client.js';
+import { TurnoRequest } from '../../models/Requests/TurnoRequest.js';
 
 export interface ITurnoService {
     // Visitante solicita turno
-    solicitarTurno(visitanteId: string, proyectoId: string): Promise<TurnoResponse>;
+    solicitarTurno(TurnoRequest: TurnoRequest): Promise<TurnoResponse>;
 
     // Admin ve lista
     getTurnosDeProyecto(proyectoId: string): Promise<TurnoResponse[]>;

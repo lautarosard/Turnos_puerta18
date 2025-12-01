@@ -23,7 +23,7 @@ export class PrismaTurnosRepository implements ITurnoRepository {
         });
     }
     async getByProyectoId(proyectoId: string): Promise<Turno[]> {
-       return await prisma.turno.findMany({
+        return await prisma.turno.findMany({
         where: { proyectoId },
         include: { visitante: true }, // Importante: traer el nombre del visitante
         orderBy: { creadoEn: 'asc' }
@@ -31,11 +31,11 @@ export class PrismaTurnosRepository implements ITurnoRepository {
     }
     async countTurnosActivos(visitanteId: string): Promise<number> {
         return await prisma.turno.count({
-      where: {
-        visitanteId:visitanteId,
-        estado: { in: ['PENDIENTE', 'LLAMADO'] } // Cuentan como activos
-      }
-    });
+        where: {
+            visitanteId:visitanteId,
+            estado: { in: ['PENDIENTE', 'LLAMADO'] } // Cuentan como activos
+        }
+        });
     }
     async updateEstado(id: string, estado: EstadoTurno): Promise<Turno> {
         return await prisma.turno.update({
@@ -43,5 +43,14 @@ export class PrismaTurnosRepository implements ITurnoRepository {
         data: { estado },
         include: { visitante: true }
     });
+    }
+    async countTurnosPendientesPrevios(proyectoId: string, numeroTurno: number): Promise<number> {
+        return await prisma.turno.count({
+        where: {
+            proyectoId: proyectoId,
+            estado: 'PENDIENTE',
+            numero: { lt: numeroTurno } // 'lt' = Less Than (menor que)
+        }
+        });
     }
 }
