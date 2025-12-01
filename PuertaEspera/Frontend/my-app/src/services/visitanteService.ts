@@ -1,5 +1,5 @@
 // src/services/visitanteService.ts
-import api from '../lib/axios'; // Importamos NUESTRA instancia configurada
+import api from './../lib/axios'; // Importamos NUESTRA instancia configurada
 
 export interface VisitanteResponse {
   token: string;

@@ -28,6 +28,7 @@ export class ProyectoService implements IProyectoService {
         descripcion: data.descripcion || null, // Manejamos opcionales
         ubicacion: data.ubicacion || null,
         duracionEstimada: data.duracionEstimada || 5,
+        imagenUrl: data.imagenUrl || null,
         adminEncargadoId: adminId // <--- ¡AQUÍ ASIGNAMOS EL ADMIN!
         });
 
@@ -94,6 +95,7 @@ export class ProyectoService implements IProyectoService {
         descripcion: proyecto.descripcion || '', // Convertimos null a string vacío si queremos
         ubicacion: proyecto.ubicacion || '',
         duracionEstimada: proyecto.duracionEstimada,
+        imagenUrl: proyecto.imagenUrl || '',
         adminEncargadoId: proyecto.adminEncargadoId
         // Opcional: Podrías devolver el nombre del admin si tu repo lo trajo (include)
         // adminNombre: (proyecto as any).adminEncargado?.nombre 

@@ -24,7 +24,10 @@ export class TurnoController {
     }
 
     // 3. Llamamos al servicio (que valida límite de 2 turnos y emite WebSocket)
-    const nuevoTurno = await this.turnoService.solicitarTurno(visitanteId, request.proyectoId);
+    const nuevoTurno = await this.turnoService.solicitarTurno({
+        visitanteId,
+        proyectoId: request.proyectoId
+    });
 
     res.status(201).json(nuevoTurno);
   };
