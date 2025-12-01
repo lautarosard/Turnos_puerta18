@@ -53,4 +53,14 @@ export class PrismaTurnosRepository implements ITurnoRepository {
         }
         });
     }
+    async findActiveByVisitanteId(visitanteId: string): Promise<Turno[]> {
+        return await prisma.turno.findMany({
+            where: {
+            visitanteId: visitanteId,
+            estado: { in: ['PENDIENTE', 'LLAMADO'] } // Solo los activos
+            },
+            orderBy: { creadoEn: 'desc' },
+            include: { visitante: true } // Importante para el mapeo
+        });
+    }
 }

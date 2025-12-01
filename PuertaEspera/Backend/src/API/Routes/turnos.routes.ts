@@ -13,6 +13,7 @@ export const createTurnoRoutes = (controller: TurnoController) => {
   // 2. ADMIN: Ver lista
   router.get('/proyecto/:proyectoId', authMiddleware, asyncHandler(controller.getByProject));
 
+  router.get('/mis-turnos', authMiddleware, asyncHandler(controller.getMine));
   // 3. ADMIN: Cambiar Estado (Llamar/Finalizar)
   router.patch('/:id/estado', authMiddleware, asyncHandler(controller.changeStatus));
 

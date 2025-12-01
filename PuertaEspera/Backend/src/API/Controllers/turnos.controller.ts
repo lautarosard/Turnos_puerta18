@@ -12,21 +12,29 @@ export class TurnoController {
    * Acción: VISITANTE solicita un turno
    */
   create = async (req: Request, res: Response) => {
-    // 1. Obtenemos el ID del proyecto del Body
-    const request = req.body as CreateTurnoRequest;
-
+    
+    const { proyectoId, visitanteId } = req.body;
+    // Obtenemos datos del usuario logueado (del Token)
+    const usuarioLogueado = req.user as any;
     // 2. Obtenemos el ID del visitante del Token (gracias al middleware)
     // Casteamos a 'any' o usamos tu tipo global para acceder a .id
-    const visitanteId = (req.user as any).id;
+    let idFinalVisitante = usuarioLogueado.id;
 
-    if (!request.proyectoId) {
+    // LÓGICA DE ADMIN:
+    // Si el que llama es ADMIN y me manda un ID de visitante, usamos ese.
+    // (Asumimos que el Admin previamente creó al visitante con el servicio de Visitantes)
+    if (usuarioLogueado.rol === 'ADMIN_PROYECTO' && visitanteId) {
+        idFinalVisitante = visitanteId;
+    }
+
+    if (!proyectoId) {
         return res.status(400).json({ message: 'El proyectoId es obligatorio' });
     }
 
     // 3. Llamamos al servicio (que valida límite de 2 turnos y emite WebSocket)
     const nuevoTurno = await this.turnoService.solicitarTurno({
         visitanteId,
-        proyectoId: request.proyectoId
+        proyectoId: proyectoId
     });
 
     res.status(201).json(nuevoTurno);
@@ -66,5 +74,14 @@ export class TurnoController {
     const turnoActualizado = await this.turnoService.cambiarEstado(id, estado, proyectoId);
 
     res.status(200).json(turnoActualizado);
+  }
+
+  getMine = async (req: Request, res: Response) => {
+    // El ID viene del token del visitante
+    const visitanteId = (req.user as any).id;
+    
+    const misTurnos = await this.turnoService.getMisTurnos(visitanteId);
+    
+    res.status(200).json(misTurnos);
   }
 }

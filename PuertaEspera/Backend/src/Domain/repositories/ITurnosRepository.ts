@@ -6,6 +6,7 @@ export interface ITurnoRepository{
 
     getByProyectoId(proyectoId:string): Promise<Turno[]>;
 
+    findActiveByVisitanteId(visitanteId: string): Promise<Turno[]>;
     countTurnosActivos(visitanteId:String): Promise<number>;
 
     updateEstado(id:string, estado: EstadoTurno):Promise<Turno>;

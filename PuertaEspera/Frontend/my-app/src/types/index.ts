@@ -1,5 +1,7 @@
 // Aquí definimos cómo se ven los datos que vienen del Backend
 
+export type EstadoTurno = 'PENDIENTE' | 'LLAMADO' | 'FINALIZADO' | 'CANCELADO';
+
 export interface Proyecto {
     id: string;
     nombre: string;
@@ -13,7 +15,8 @@ export interface Proyecto {
 export interface Turno {
     id: string;
     numero: number;
-    estado: 'PENDIENTE' | 'LLAMADO' | 'FINALIZADO' | 'CANCELADO';
+    estado: EstadoTurno;
+    fecha: Date;
     visitanteNombre: string;
     tiempoDeEspera?: number;
     proyectoId: string;

@@ -60,6 +60,25 @@ export class TurnoService implements ITurnoService {
         return response;
     }
 
+    async getMisTurnos(visitanteId: string): Promise<TurnoResponse[]> {
+        const turnos = await this.turnoRepository.findActiveByVisitanteId(visitanteId);
+        
+        // Calculamos el tiempo de espera para cada turno de la lista
+        const turnosConTiempo = await Promise.all(turnos.map(async (turno) => {
+            const proyecto = await this.proyectoRepository.getById(turno.proyectoId);
+            
+            const turnosAntes = await this.turnoRepository.countTurnosPendientesPrevios(
+                turno.proyectoId, 
+                turno.numero
+            );
+            
+            const tiempo = turnosAntes * (proyecto?.duracionEstimada || 15);
+            
+            return this.mapToResponse(turno, tiempo);
+        }));
+
+        return turnosConTiempo;
+    }
     private mapToResponse(turno: Turno & { visitante?: { nombre: string } | null }, tiempoEstimado?: number): TurnoResponse {
     
     return {
