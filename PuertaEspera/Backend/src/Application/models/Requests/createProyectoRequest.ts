@@ -4,4 +4,5 @@ export interface CreateProjectRequest {
     descripcion?: string;
     ubicacion?: string;
     duracionEstimada?: number;
+    imagenUrl?: string;
 }

@@ -5,4 +5,5 @@ export interface ProyectoResponse {
     ubicacion?: string;
     duracionEstimada?: number;
     adminEncargadoId: string;
+    imagenUrl?: string;
 }

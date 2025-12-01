@@ -4,13 +4,14 @@ import { Button } from './../components/ui/button';
 import logo from '../assets/logoPuerta.svg';
 import flameLogo from './../assets/flame-icon.svg';
 import { ingresarVisitante } from './../services/visitanteService';
-// Importaremos el servicio más adelante
-// import { ingresarVisitante } from '../services/visitanteService'; 
+import { useAuth } from '../context/AuthContext'; 
 
 export function VisitorLoginPage() {
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,17 +25,15 @@ export function VisitorLoginPage() {
       // 2. LLAMADA REAL A LA API
       const data = await ingresarVisitante(nombre);
       
-      console.log("Respuesta del Server:", data); // <--- MIRA ESTO EN CONSOLA
+      console.log("Respuesta del Server:", data);
 
-      // 3. Guardamos el Token (Fundamental)
-      localStorage.setItem('token_visitante', data.token);
-      localStorage.setItem('datos_visitante', JSON.stringify(data.visitante));
-      
+      // 3. Guardamos el Token 
+      login(data.token, data.visitante);
+
       // 4. Feedback visual
       alert(`¡Bienvenido ${data.visitante.nombre}! Token guardado.`);
       
-      // Aquí redirigiremos en el futuro:
-      // navigate('/dashboard-proyectos');
+      navigate('/proyectos');
 
     } catch (error: any) {
       console.error(error);
