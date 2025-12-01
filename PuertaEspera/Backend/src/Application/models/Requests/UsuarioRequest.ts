@@ -1,5 +1,5 @@
 export interface UserRequest {
-    name:string;
+    nombre:string;
     email: string;
     rol?:string;
 }

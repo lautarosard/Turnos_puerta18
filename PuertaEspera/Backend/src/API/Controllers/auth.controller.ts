@@ -23,7 +23,7 @@ export class AuthController {
         const registerRequest = req.body as RegisterRequest;
 
         // 2. Validar datos básicos (opcional, pero recomendado)
-        if (!registerRequest.email || !registerRequest.password || !registerRequest.name) {
+        if (!registerRequest.email || !registerRequest.password || !registerRequest.nombre) {
             return res.status(400).json({ message: 'Faltan datos requeridos' });
         }
 

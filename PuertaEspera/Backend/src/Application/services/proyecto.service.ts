@@ -26,7 +26,7 @@ export class ProyectoService implements IProyectoService {
         const nuevoProyecto = await this.proyectoRepository.create({
         nombre: data.nombre,
         descripcion: data.descripcion || null, // Manejamos opcionales
-        ubicacion: data.ubicacion || null,
+        pa: data.pa || false,
         duracionEstimada: data.duracionEstimada || 5,
         imagenUrl: data.imagenUrl || null,
         adminEncargadoId: adminId // <--- ¡AQUÍ ASIGNAMOS EL ADMIN!
@@ -93,7 +93,7 @@ export class ProyectoService implements IProyectoService {
         id: proyecto.id,
         nombre: proyecto.nombre,
         descripcion: proyecto.descripcion || '', // Convertimos null a string vacío si queremos
-        ubicacion: proyecto.ubicacion || '',
+        pa: proyecto.pa || false,
         duracionEstimada: proyecto.duracionEstimada,
         imagenUrl: proyecto.imagenUrl || '',
         adminEncargadoId: proyecto.adminEncargadoId

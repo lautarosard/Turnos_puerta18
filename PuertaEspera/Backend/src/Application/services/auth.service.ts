@@ -84,7 +84,7 @@ export class AuthService {
         // 3. Crear el usuario usando el Repositorio
         const nuevoUsuario = await this.usuarioRepository.create({
         email: input.email,
-        nombre: input.name,
+        nombre: input.nombre,
         password: hashedPassword,
         rol: 'ADMIN_PROYECTO' // Por defecto los creados serán admins de proyecto
         });

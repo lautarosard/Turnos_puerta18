@@ -2,7 +2,7 @@ export interface ProyectoResponse {
     id: string;
     nombre: string;
     descripcion?: string;
-    ubicacion?: string;
+    pa: boolean;
     duracionEstimada?: number;
     adminEncargadoId: string;
     imagenUrl?: string;

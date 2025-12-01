@@ -2,7 +2,7 @@
 export interface CreateProjectRequest {
     nombre: string;
     descripcion?: string;
-    ubicacion?: string;
+    pa: boolean;
     duracionEstimada?: number;
     imagenUrl?: string;
 }

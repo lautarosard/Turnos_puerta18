@@ -49,7 +49,7 @@ export function ProjectListPage() {
             <div className="text-white animate-pulse">Cargando experiencias...</div>
         ) : (
             // Grid responsive: 2 columnas en celular, 3 o 4 en pantallas más grandes
-            <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+            <div className="w-full max-w-4xl grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
             {proyectos.map((proy) => (
                 <ProjectCard 
                 key={proy.id} 
