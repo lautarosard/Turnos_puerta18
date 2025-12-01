@@ -43,6 +43,7 @@ model Proyecto {
   nombre      String  @unique
   descripcion String? // El '?' significa que es opcional
   ubicacion   String?
+  imagenUrl        String?
   duracionEstimada Int @default(5)
 
   // Relación: Un Proyecto pertenece a UN Usuario (Admin)
