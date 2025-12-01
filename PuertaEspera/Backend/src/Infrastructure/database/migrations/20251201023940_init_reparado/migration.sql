@@ -29,6 +29,7 @@ CREATE TABLE "Proyecto" (
     "nombre" TEXT NOT NULL,
     "descripcion" TEXT,
     "ubicacion" TEXT,
+    "imagenUrl" TEXT,
     "duracionEstimada" INTEGER NOT NULL DEFAULT 5,
     "adminEncargadoId" TEXT NOT NULL,
 

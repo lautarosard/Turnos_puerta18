@@ -15,8 +15,8 @@ async function main() {
     console.log('Iniciando el script de seeding...');
 
     // --- ¡Define aquí tu primer admin! ---
-    const adminEmail = 'Cone@proyecto.com';
-    const adminPassword = 'Cone2003'; // La contraseña en texto plano
+    const adminEmail = 'Cone@superuser.com';
+    const adminPassword = 'Rabbit2003*'; // La contraseña en texto plano
     // -------------------------------------
 
     // 4. Hasheamos la contraseña
@@ -35,7 +35,7 @@ async function main() {
         // Si no existe, créalo con estos datos
         email: adminEmail,
         nombre: 'Admin_Principal',
-        password: hashedPassword,
+        password: hashedPassword,   
         rol: RoleUsuario.ADMIN_PROYECTO,
         },
     });
