@@ -4,7 +4,7 @@ import { getProyectos } from '../services/proyectoService';
 import type { Proyecto } from '../types';
 import { ProjectCard } from '../components/ProjectCard';
 import { AdminProjectModal } from '../components/AdminProjectModal';
-import { CreateProjectModal } from '../components/CreateProjectModal'; // <--- IMPORTAR
+import { CreateProjectModal } from '../components/CreateProjectModal';
 import logo from '../assets/logoPuerta.svg';
 import flameLogo from './../assets/flame-icon.svg';
 

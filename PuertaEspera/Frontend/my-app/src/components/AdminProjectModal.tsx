@@ -67,7 +67,7 @@ export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
     };
 
     return (
-        <div className="fixed inset-0 bg-brand-dark/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-brand-background-dashboard/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white w-full max-w-sm rounded-3xl p-6 relative shadow-2xl animate-in zoom-in duration-200">
 
                 {/* Botón Cerrar */}
@@ -88,11 +88,11 @@ export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
                             Gestión del Stand
                         </p>
 
-                        <Button onClick={() => setView('registro')} className="bg-[#EF0886] hover:bg-pink-700 w-full">
+                        <Button onClick={() => setView('registro')} className="bg-[#9406F1] hover:bg-pink-700 w-full">
                             Registrar admin.
                         </Button>
 
-                        <Button onClick={handleVerAdmin} className="bg-[#EF0886] hover:bg-pink-700 w-full">
+                        <Button onClick={handleVerAdmin} className="bg-[#9406F1] hover:bg-pink-700 w-full">
                             Ver admin.
                         </Button>
                     </div>
@@ -105,7 +105,7 @@ export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
 
                         <form onSubmit={handleRegister} className="flex flex-col gap-3">
                             <input
-                                type="text" placeholder="Nombre (ej: Maru)" required
+                                type="text" placeholder="Nombre (ej: Eve)" required
                                 className="p-3 bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-purple"
                                 value={formData.nombre}
                                 onChange={e => setFormData({ ...formData, nombre: e.target.value })}
@@ -130,7 +130,7 @@ export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
                             />
 
                             <div className="flex gap-2 mt-4">
-                                <Button type="submit" disabled={loading} className="flex-1 bg-[#EF0886]">
+                                <Button type="submit" disabled={loading} className="flex-1 bg-[#9406F1]">
                                     {loading ? '...' : 'Registrar'}
                                 </Button>
                                 <button
