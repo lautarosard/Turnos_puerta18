@@ -4,6 +4,7 @@ import { VisitorLoginPage } from './pages/VisitorLoginPage';
 import { ProjectListPage } from './pages/ProjectListPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { SuperAdminDashboard } from './pages/SuperAdminDashboard';
+import { StandAdminPage } from './pages/StandAdminPage';
 function App() {
 
   return (
@@ -20,9 +21,8 @@ function App() {
         <Route path="/admin" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<SuperAdminDashboard />} />
 
-        {/* Aquí agregaremos luego el stand individual:
-        <Route path="/admin/stand/:id" element={<StandAdminPage />}
-        */}
+        {/* stand individual: */}
+        <Route path="/admin/stand/:id" element={<StandAdminPage />} />
       </Routes>
     </BrowserRouter>
   )

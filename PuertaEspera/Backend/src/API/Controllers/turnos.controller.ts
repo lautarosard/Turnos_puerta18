@@ -5,37 +5,45 @@ import { CreateTurnoRequest } from '../../Application/models/Requests/CreateTurn
 import { EstadoTurno } from '../../Infrastructure/database/client.js';
 
 export class TurnoController {
-  constructor(private turnoService: TurnoService) {}
+  constructor(private turnoService: TurnoService) { }
 
   /**
    * POST /api/turnos
    * Acción: VISITANTE solicita un turno
    */
   create = async (req: Request, res: Response) => {
-    
-    const { proyectoId, visitanteId } = req.body;
-    // Obtenemos datos del usuario logueado (del Token)
-    const usuarioLogueado = req.user as any;
-    console.log("Usuario Logueado (Token):", usuarioLogueado);
-    // 2. Obtenemos el ID del visitante del Token (gracias al middleware)
-    // Casteamos a 'any' o usamos tu tipo global para acceder a .id
-    let idFinalVisitante = usuarioLogueado.id;
 
-    // LÓGICA DE ADMIN:
-    // Si el que llama es ADMIN y me manda un ID de visitante, usamos ese.
-    // (Asumimos que el Admin previamente creó al visitante con el servicio de Visitantes)
-    if (usuarioLogueado.rol === 'ADMIN_PROYECTO' && visitanteId) {
-        idFinalVisitante = visitanteId;
+    const { proyectoId, visitanteId } = req.body;
+    const usuarioLogueado = req.user as any;
+
+    console.log("Usuario Logueado:", usuarioLogueado);
+
+    // Lógica de Identidad
+    let idFinalVisitante = usuarioLogueado.id;
+    const esAdmin = usuarioLogueado.rol === 'SUPER_ADMIN' || usuarioLogueado.rol === 'ADMIN_PROYECTO';
+
+    // 1. SI ES ADMIN:
+    if (esAdmin) {
+      // Un admin NO puede sacar turno para sí mismo (porque no está en la tabla visitantes)
+      // Debe especificar obligatoriamente un visitanteId
+      if (!visitanteId) {
+        return res.status(400).json({
+          message: 'Modo Admin: Debes indicar el ID del visitante para asignarle el turno.'
+        });
+      }
+      idFinalVisitante = visitanteId;
     }
+
+    // 2. SI ES VISITANTE:
+    // (Usa su propio ID, que ya asignamos arriba por defecto)
 
     if (!proyectoId) {
-        return res.status(400).json({ message: 'El proyectoId es obligatorio' });
+      return res.status(400).json({ message: 'El proyectoId es obligatorio' });
     }
 
-    // 3. Llamamos al servicio (que valida límite de 2 turnos y emite WebSocket)
     const nuevoTurno = await this.turnoService.solicitarTurno({
-        visitanteId: idFinalVisitante,
-        proyectoId: proyectoId
+      visitanteId: idFinalVisitante,
+      proyectoId: proyectoId
     });
 
     res.status(201).json(nuevoTurno);
@@ -47,9 +55,9 @@ export class TurnoController {
    */
   getByProject = async (req: Request, res: Response) => {
     const { proyectoId } = req.params;
-    
+
     const turnos = await this.turnoService.getTurnosDeProyecto(proyectoId);
-    
+
     res.status(200).json(turnos);
   };
 
@@ -64,11 +72,11 @@ export class TurnoController {
     // 1. Validamos que el estado sea válido (PENDIENTE, LLAMADO, FINALIZADO...)
     // Object.values devuelve un array con los valores del Enum
     if (!Object.values(EstadoTurno).includes(estado)) {
-        return res.status(400).json({ message: `Estado inválido. Valores permitidos: ${Object.values(EstadoTurno).join(', ')}` });
+      return res.status(400).json({ message: `Estado inválido. Valores permitidos: ${Object.values(EstadoTurno).join(', ')}` });
     }
 
     if (!proyectoId) {
-        return res.status(400).json({ message: 'El proyectoId es necesario para notificar el cambio.' });
+      return res.status(400).json({ message: 'El proyectoId es necesario para notificar el cambio.' });
     }
 
     // 2. Ejecutamos cambio
@@ -80,9 +88,9 @@ export class TurnoController {
   getMine = async (req: Request, res: Response) => {
     // El ID viene del token del visitante
     const visitanteId = (req.user as any).id;
-    
+
     const misTurnos = await this.turnoService.getMisTurnos(visitanteId);
-    
+
     res.status(200).json(misTurnos);
   }
 }
