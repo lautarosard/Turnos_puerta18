@@ -4,5 +4,6 @@ export interface LoginResponse {
         id: string;
         nombre: string;
         username: string;
+        rol: string;
     };
 }
