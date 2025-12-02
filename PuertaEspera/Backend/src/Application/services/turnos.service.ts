@@ -17,7 +17,7 @@ export class TurnoService implements ITurnoService {
     async solicitarTurno(request: TurnoRequest): Promise<TurnoResponse> {
         //validación de turnos
         const validarTurno = await this.turnoRepository.countTurnosActivos(request.visitanteId);
-        if(validarTurno >= 2) {
+        if(validarTurno >= 3) {
             throw new Error('Limite alcanzado: Ya tienes 2 turnos en espera');
         }
         
