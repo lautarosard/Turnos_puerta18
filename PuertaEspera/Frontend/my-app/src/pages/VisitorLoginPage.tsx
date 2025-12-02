@@ -4,7 +4,7 @@ import { Button } from './../components/ui/button';
 import logo from '../assets/logoPuerta.svg';
 import flameLogo from './../assets/flame-icon.svg';
 import { ingresarVisitante } from './../services/visitanteService';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 
 export function VisitorLoginPage() {
   const [nombre, setNombre] = useState('');
@@ -15,16 +15,16 @@ export function VisitorLoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!nombre.trim()) return;
+    if (!nombre.trim()) return;
 
     setLoading(true); // Activamos estado de carga
 
     try {
       console.log("Enviando nombre:", nombre);
-      
+
       // 2. LLAMADA REAL A LA API
       const data = await ingresarVisitante(nombre);
-      
+
       console.log("Respuesta del Server:", data);
 
       // 3. Guardamos el Token 
@@ -32,7 +32,7 @@ export function VisitorLoginPage() {
 
       // 4. Feedback visual
       alert(`¡Bienvenido ${data.visitante.nombre}! Token guardado.`);
-      
+
       navigate('/proyectos');
 
     } catch (error: any) {
@@ -46,12 +46,12 @@ export function VisitorLoginPage() {
   return (
     <div className="h-screen w-full bg-brand-dark flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col items-center">
-        <img src={logo} alt="Puerta 18" className="w-64 mb-16" />
+        <img src={logo} alt="Puerta 18" className="w-48 md:w-64 mb-6 md:mb-10" />
 
         <form onSubmit={handleSubmit} className="w-full space-y-6">
-          <input 
-            type="text" 
-            placeholder="Nombre" 
+          <input
+            type="text"
+            placeholder="Nombre y apellido"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             disabled={loading} // Se bloquea mientras carga
@@ -64,8 +64,8 @@ export function VisitorLoginPage() {
         </form>
 
         {/* Fueguito */}
-        <div className="mt-20 text-3xl animate-bounce">
-        <img src={flameLogo} alt="Puerta 18" className="w-64 mb-10" />
+        <div className="mt-16 md:mt-24 animate-bounce">
+          <img src={flameLogo} alt="Puerta 18" className="w-24 md:w-48" />
 
         </div>
       </div>
