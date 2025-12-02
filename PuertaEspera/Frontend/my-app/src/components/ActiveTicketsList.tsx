@@ -108,7 +108,7 @@ export function ActiveTicketsList({ proyectos }: Props) {
                 
                 <Button 
                     onClick={() => setTurnoParaCancelar(null)} 
-                    className="bg-white text-[#EF0886] border-2 border-[#EF0886] hover:bg-pink-50 flex-1 rounded-xl font-bold"
+                    className="bg-white !text-[#EF0886] border-2 border-[#EF0886] hover:bg-pink-50 flex-1 rounded-xl font-bold"
                 >
                     Cancelar
                 </Button>
