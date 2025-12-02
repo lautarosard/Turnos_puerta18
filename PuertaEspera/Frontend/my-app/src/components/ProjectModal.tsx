@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Proyecto } from './../types/index';
 import { Button } from './ui/button';
 import { solicitarTurno } from './../services/turnoService';
-import { useAuth } from './../context/AuthContext';
+//import { useAuth } from './../context/AuthContext';
 import { useTurnos } from './../context/TurnoContext';
 
 interface ProjectModalProps {
