@@ -2,7 +2,8 @@ import { useState } from 'react';
 import type { Proyecto } from './../types/index';
 import { Button } from './ui/button';
 import { solicitarTurno } from './../services/turnoService';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './../context/AuthContext';
+import { useTurnos } from './../context/TurnoContext';
 
 interface ProjectModalProps {
     proyecto: Proyecto;
@@ -22,22 +23,24 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
     const esInformativo = proyecto.duracionEstimada === 0;
 
     // Acción: Sacar Turno
+    // 1. Traemos la función refrescar
+    const { refrescarTurnos } = useTurnos();
+
     const handleUnirseFila = async () => {
         setLoading(true);
         try {
-        // 1. Llamamos al servicio (asegúrate de tener este servicio importado)
-        // Nota: El servicio solicitarTurno que hicimos antes espera { proyectoId, visitanteId } 
-        // pero en el controller lo sacamos del token. 
-        // Si tu servicio frontend espera solo ID del proyecto, úsalo así:
-            await solicitarTurno(proyecto.id); 
+        await solicitarTurno(proyecto.id);
         
-        // 2. Si sale bien, mostramos el paso de éxito
-            setStep('success');
+        // 2. ¡AQUÍ ESTÁ LA CLAVE!
+        // Apenas tenemos éxito, recargamos los turnos para que aparezca el cartelito
+        await refrescarTurnos(); 
+        
+        setStep('success'); // Mostramos "Confirmaste tu lugar"
         } catch (error: any) {
-            alert(error.message || "Error al unirse");
-            onClose(); // Cerramos si hay error grave
+        alert(error.message || "Error al unirse");
+        onClose();
         } finally {
-            setLoading(false);
+        setLoading(false);
         }
     };
 

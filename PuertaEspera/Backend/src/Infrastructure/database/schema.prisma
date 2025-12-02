@@ -72,9 +72,8 @@ model Turno {
   proyecto   Proyecto @relation(fields: [proyectoId], references: [id])
   proyectoId String
 
-  // Hacemos que la combinación de visitante y proyecto PENDIENTE sea única
-  // Esto ayuda a evitar que alguien saque 2 turnos PENDIENTES para el mismo proyecto
-  @@unique([visitanteId, proyectoId, estado])
+  // Comentado por romper el cancelar turno, 
+  //@@unique([visitanteId, proyectoId, estado])
 }
 
 // ===================================

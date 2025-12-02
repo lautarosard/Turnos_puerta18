@@ -1,39 +1,68 @@
-import { createContext, useContext, useState, useEffect  } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { Turno } from "./../types";
-import { getTurnosActivosUsuario } from "./../services/turnoService"; // Tendremos que crear este endpoint o filtrar
+import { io } from "socket.io-client"; 
+import type { Turno } from "../types";
+import { getTurnosActivosUsuario } from "../services/turnoService";
 import { useAuth } from "./AuthContext";
+
+const SOCKET_URL = import.meta.env.VITE_API_URL.replace('/api', '');
+const socket = io(SOCKET_URL);
 
 interface TurnoContextType {
     turnosActivos: Turno[];
+    refrescarTurnos: () => Promise<void>;
+    // AGREGAMOS ESTAS DOS FUNCIONES AL TIPO:
     agregarTurnoLocal: (turno: Turno) => void;
     quitarTurnoLocal: (id: string) => void;
-    refrescarTurnos: () => void;
-}
+    }
 
-const TurnoContext = createContext<TurnoContextType | undefined>(undefined);
+    const TurnoContext = createContext<TurnoContextType | undefined>(undefined);
 
-export function TurnoProvider({ children }: { children: ReactNode }) {
+    export function TurnoProvider({ children }: { children: ReactNode }) {
     const [turnosActivos, setTurnosActivos] = useState<Turno[]>([]);
-    const { user } = useAuth(); // Necesitamos saber quién es
+    const { user } = useAuth();
 
     const refrescarTurnos = async () => {
         if (!user) return;
         try {
-        // Nota: Necesitarás un endpoint en el back que devuelva "mis turnos activos".
-        // Por ahora simularemos que traemos todos y filtramos, o asume que getTurnosActivosUsuario existe.
-        const misTurnos = await getTurnosActivosUsuario(); 
+        const misTurnos = await getTurnosActivosUsuario();
         setTurnosActivos(misTurnos);
         } catch (error) {
         console.error("Error cargando turnos", error);
         }
     };
 
-    // Cargar turnos al iniciar o al loguearse
     useEffect(() => {
         refrescarTurnos();
     }, [user]);
 
+    useEffect(() => {
+        if (!user || turnosActivos.length === 0) return;
+
+        turnosActivos.forEach(turno => {
+        socket.emit('unirse-proyecto', turno.proyectoId);
+        });
+
+        const handleUpdate = (turnoActualizado: Turno) => {
+        // Si el turno se canceló o finalizó, lo sacamos de la lista
+        if (turnoActualizado.estado === 'FINALIZADO' || turnoActualizado.estado === 'CANCELADO') {
+            quitarTurnoLocal(turnoActualizado.id);
+        } else {
+            // Si cambió a LLAMADO u otro, lo actualizamos
+            setTurnosActivos(prev => 
+            prev.map(t => t.id === turnoActualizado.id ? turnoActualizado : t)
+            );
+        }
+        };
+
+        socket.on('turno-actualizado', handleUpdate);
+
+        return () => {
+        socket.off('turno-actualizado', handleUpdate);
+        };
+    }, [turnosActivos, user]);
+
+    // --- FUNCIONES NUEVAS ---
     const agregarTurnoLocal = (turno: Turno) => {
         setTurnosActivos(prev => [...prev, turno]);
     };
@@ -43,7 +72,12 @@ export function TurnoProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <TurnoContext.Provider value={{ turnosActivos, agregarTurnoLocal, quitarTurnoLocal, refrescarTurnos }}>
+        <TurnoContext.Provider value={{ 
+        turnosActivos, 
+        refrescarTurnos, 
+        agregarTurnoLocal, 
+        quitarTurnoLocal 
+        }}>
         {children}
         </TurnoContext.Provider>
     );

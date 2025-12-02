@@ -51,7 +51,7 @@ export function ProjectListPage() {
         <div className="min-h-screen bg-brand-background px-6 py-10 flex flex-col items-center">
         
         {/* 1. Lista de Tickets Activos (Arriba a la derecha) */}
-        <ActiveTicketsList />
+        <ActiveTicketsList proyectos={proyectos}/>
 
         {/* Logo */}
         <img src={logo} alt="Puerta 18" className="w-64 mb-12" />
@@ -74,7 +74,7 @@ export function ProjectListPage() {
         {loading ? (
             <div className="text-white animate-pulse">Cargando experiencias...</div>
         ) : (
-            <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+            <div className="w-full max-w-4xl grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
             {proyectos.map((proy) => (
                 <ProjectCard 
                 key={proy.id} 
