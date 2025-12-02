@@ -10,7 +10,7 @@ export function WelcomePage() {
   return (
     // Contenedor principal con imagen de fondo
     <div
-      className="min-h-screen w-full bg-cover bg-center relative flex flex-col items-center justify-center p-6 py-10"
+      className="h-dvh w-full bg-cover bg-center relative flex flex-col items-center justify-evenly p-4 overflow-hidden"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       {/* Capa violeta semitransparente (Overlay) */}

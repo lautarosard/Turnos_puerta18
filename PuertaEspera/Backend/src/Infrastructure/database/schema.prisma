@@ -15,7 +15,7 @@ datasource db {
 // ===================================
 model Usuario {
   id       String     @id @default(uuid())
-  email    String     @unique
+  username String     @unique
   nombre   String
   password String // Esto se guarda hasheado
   rol      RoleUsuario @default(ADMIN_PROYECTO)
@@ -81,6 +81,7 @@ model Turno {
 // ===================================
 
 enum RoleUsuario {
+  SUPER_ADMIN
   ADMIN_PROYECTO
 }
 
