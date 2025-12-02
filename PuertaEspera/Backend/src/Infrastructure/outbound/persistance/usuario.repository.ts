@@ -24,7 +24,7 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
      */
     async getById(id: string): Promise<Usuario | null> {
         return await prisma.usuario.findUnique({
-        where: { id: id },
+            where: { id: id },
         });
     }
 
@@ -32,9 +32,9 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
      * Buscar por Email
      * SQL: SELECT * FROM Usuario WHERE email = '...';
      */
-    async findByEmail(email: string): Promise<Usuario | null> {
+    async findByUsername(username: string): Promise<Usuario | null> {
         return await prisma.usuario.findUnique({
-        where: { email: email },
+            where: { username: username },
         });
     }
 
@@ -45,7 +45,7 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
     // Usamos Omit<'id'> porque la DB lo genera
     async create(data: Omit<Usuario, 'id'>): Promise<Usuario> {
         return await prisma.usuario.create({
-        data: data,
+            data: data,
         });
     }
 
@@ -56,8 +56,8 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
     // Usamos Partial para permitir actualizar solo algunos campos
     async update(id: string, data: Partial<Usuario>): Promise<Usuario> {
         return await prisma.usuario.update({
-        where: { id: id },
-        data: data,
+            where: { id: id },
+            data: data,
         });
     }
 
@@ -67,7 +67,7 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
      */
     async delete(id: string): Promise<Usuario> {
         return await prisma.usuario.delete({
-        where: { id: id },
+            where: { id: id },
         });
     }
 }

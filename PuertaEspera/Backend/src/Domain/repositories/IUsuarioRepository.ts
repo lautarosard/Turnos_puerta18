@@ -6,14 +6,14 @@ import { Usuario } from "../../Infrastructure/database/client.js";
 
 // 2. Renombramos a singular (convención)
 export interface IUsuarioRepository {
-    
+
     getAll(): Promise<Usuario[]>;
 
     // 3. Devuelve Usuario o null
     getById(id: string): Promise<Usuario | null>;
 
     // 4. Devuelve Usuario o null
-    findByEmail(email: string): Promise<Usuario | null>;
+    findByUsername(username: string): Promise<Usuario | null>;
 
     // 5. Usamos Omit para decir "un Usuario SIN id"
     create(data: Omit<Usuario, 'id'>): Promise<Usuario>;
@@ -22,4 +22,4 @@ export interface IUsuarioRepository {
     update(id: string, data: Partial<Usuario>): Promise<Usuario>;
 
     delete(id: string): Promise<Usuario>;
-    }
+}

@@ -15,7 +15,7 @@ async function main() {
     console.log('Iniciando el script de seeding...');
 
     // --- ¡Define aquí tu primer admin! ---
-    const adminEmail = 'Cone@superuser.com';
+    const adminUsername = 'CLU';
     const adminPassword = 'Rabbit2003*'; // La contraseña en texto plano
     // -------------------------------------
 
@@ -29,14 +29,14 @@ async function main() {
     // Usamos 'upsert' (update + insert) para evitar errores
     // si ejecutamos el script varias veces.
     const adminUser = await prisma.usuario.upsert({
-        where: { email: adminEmail }, // Busca al usuario por su email
+        where: { username: adminUsername }, // Busca al usuario por su email
         update: {}, // Si ya existe, no hagas nada
         create: {
-        // Si no existe, créalo con estos datos
-        email: adminEmail,
-        nombre: 'Admin_Principal',
-        password: hashedPassword,   
-        rol: RoleUsuario.ADMIN_PROYECTO,
+            // Si no existe, créalo con estos datos
+            username: adminUsername,
+            nombre: 'Admin_Principal',
+            password: hashedPassword,
+            rol: RoleUsuario.SUPER_ADMIN,
         },
     });
 
