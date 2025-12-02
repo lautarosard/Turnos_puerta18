@@ -9,10 +9,10 @@ export const createProyectoRoutes = (controller: ProyectoController) => {
     const router = Router();
 
     // --- RUTAS PÚBLICAS (Visitantes) ---
-    
+
     // GET /api/proyectos -> Ver todos los stands
     router.get('/', asyncHandler(controller.getAll));
-    
+
     // GET /api/proyectos/:id -> Ver detalle de un stand
     router.get('/:id', asyncHandler(controller.getById));
 
@@ -21,7 +21,7 @@ export const createProyectoRoutes = (controller: ProyectoController) => {
     // Requieren Header "Authorization: Bearer <token>"
 
     // POST /api/proyectos -> Crear nuevo proyecto
-    router.post('/', authMiddleware,checkRole(['ADMIN_PROYECTO']),asyncHandler(controller.create));
+    router.post('/', authMiddleware, checkRole(['SUPER_ADMIN']), asyncHandler(controller.create));
 
     // GET /api/proyectos/mis-proyectos -> Ver SOLO los míos
     // (Importante: poner esta ANTES de /:id para que no confunda "mis-proyectos" con un ID)

@@ -4,7 +4,7 @@ export interface ProyectoResponse {
     id: string;
     nombre: string;
     descripcion?: string;
-    ubicacion?: string;
+    pa?: boolean;
     duracionEstimada: number;
     imagenUrl?: string | null;
 }
@@ -12,13 +12,14 @@ export interface ProyectoResponse {
 export interface CreateProjectRequest {
     nombre: string;
     descripcion?: string;
-    ubicacion?: string;
+    pa?: boolean;
     duracionEstimada?: number;
     imagenUrl?: string | null;
 }
 
 export const crearProyecto = async (data: CreateProjectRequest): Promise<ProyectoResponse> => {
-    const { data: proyecto } = await api.post<ProyectoResponse>('/proyectos', data);
+    const payload = { ...data, pa: data.pa ?? false };
+    const { data: proyecto } = await api.post<ProyectoResponse>('/proyectos', payload);
     return proyecto;
 };
 

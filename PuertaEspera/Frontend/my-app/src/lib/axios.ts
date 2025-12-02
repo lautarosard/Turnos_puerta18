@@ -1,33 +1,38 @@
 // src/lib/axios.ts
 import axios from 'axios';
 
-// Creamos una "instancia" de axios con tu configuración base
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // Lee la URL del .env
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 api.interceptors.request.use((config) => {
-  // 1. Buscamos el token en localStorage
-  const token = localStorage.getItem('token_visitante');
-  
-  // 2. Si existe, lo agregamos al header Authorization
+  // CAMBIO CLAVE:
+  // Buscamos primero el token de ADMIN. Si no existe, buscamos el de VISITANTE.
+  const token = localStorage.getItem('token_admin') || localStorage.getItem('token_visitante');
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  
+
   return config;
 }, (error) => {
   return Promise.reject(error);
 });
-// (Opcional pero recomendado) Interceptor para errores
-// Si la API devuelve error, aquí podemos hacer un console.log automático
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("Error en la petición:", error.response?.data || error.message);
+    // Esto te ayuda a debuguear en consola
+    console.error("Error Axios:", error.response?.data || error.message);
+
+    // Opcional: Si el token expiró (401), podrías redirigir al login
+    if (error.response?.status === 401) {
+      // console.log("Sesión expirada");
+    }
+
     return Promise.reject(error);
   }
 );

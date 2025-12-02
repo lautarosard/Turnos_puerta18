@@ -1,0 +1,135 @@
+import { useState } from 'react';
+import { Button } from './ui/button';
+import { crearProyecto } from '../services/proyectoService';
+
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    onSuccess: () => void; // Para avisarle al Dashboard que recargue
+}
+
+// Lista de iconos disponibles en tu carpeta assets/icons
+// (Asegúrate de que los nombres coincidan con tus archivos .svg)
+const ICONS = [
+    { name: 'robot.svg', label: 'Robot' },
+    { name: 'controller.svg', label: 'Joystick' },
+    { name: 'camera.svg', label: 'Cámara' },
+    { name: 'vr.svg', label: 'VR' },
+    { name: 'art.svg', label: 'Arte' }
+];
+
+export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {
+    const [loading, setLoading] = useState(false);
+
+    // Estado del formulario
+    const [form, setForm] = useState({
+        nombre: '',
+        descripcion: '',
+        duracionEstimada: 5,
+        imagenUrl: 'robot.svg' // Icono por defecto
+    });
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await crearProyecto({
+                nombre: form.nombre,
+                descripcion: form.descripcion,
+                duracionEstimada: Number(form.duracionEstimada),
+                imagenUrl: form.imagenUrl,
+                pa: true
+            });
+
+            // Si sale bien:
+            onSuccess(); // Recargamos la grilla de atrás
+            onClose();   // Cerramos el modal
+
+        } catch (error: any) {
+            alert(error.response?.data?.message || "Error al crear el stand");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-brand-dark/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white w-full max-w-md rounded-3xl p-8 relative shadow-2xl animate-in zoom-in duration-200">
+
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 font-dm-sans">
+                    Nuevo Stand
+                </h2>
+
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+                    {/* Nombre */}
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">Nombre del Stand</label>
+                        <input
+                            type="text" required
+                            placeholder="Ej: Robot Guía"
+                            className="w-full p-3 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-brand-purple"
+                            value={form.nombre}
+                            onChange={e => setForm({ ...form, nombre: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Descripción */}
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">Descripción Corta</label>
+                        <input
+                            type="text"
+                            placeholder="Ej: Interactuá con nuestro robot..."
+                            className="w-full p-3 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-brand-purple"
+                            value={form.descripcion}
+                            onChange={e => setForm({ ...form, descripcion: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Duración y Icono (en fila) */}
+                    <div className="flex gap-4">
+                        <div className="flex-1">
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Duración (min)</label>
+                            <input
+                                type="number" min="0" required
+                                className="w-full p-3 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-brand-purple"
+                                value={form.duracionEstimada}
+                                onChange={e => setForm({ ...form, duracionEstimada: Number(e.target.value) })}
+                            />
+                        </div>
+
+                        <div className="flex-1">
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Ícono</label>
+                            <select
+                                className="w-full p-3 bg-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-brand-purple"
+                                value={form.imagenUrl}
+                                onChange={e => setForm({ ...form, imagenUrl: e.target.value })}
+                            >
+                                {ICONS.map(icon => (
+                                    <option key={icon.name} value={icon.name}>{icon.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Botones */}
+                    <div className="flex gap-3 mt-4">
+                        <Button type="submit" disabled={loading} className="flex-1 bg-[#EF0886]">
+                            {loading ? 'Creando...' : 'Crear Stand'}
+                        </Button>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex-1 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition"
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    );
+}
