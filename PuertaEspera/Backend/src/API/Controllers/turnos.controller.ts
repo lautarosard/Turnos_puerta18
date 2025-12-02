@@ -16,6 +16,7 @@ export class TurnoController {
     const { proyectoId, visitanteId } = req.body;
     // Obtenemos datos del usuario logueado (del Token)
     const usuarioLogueado = req.user as any;
+    console.log("Usuario Logueado (Token):", usuarioLogueado);
     // 2. Obtenemos el ID del visitante del Token (gracias al middleware)
     // Casteamos a 'any' o usamos tu tipo global para acceder a .id
     let idFinalVisitante = usuarioLogueado.id;

@@ -27,7 +27,7 @@ export class ProyectoService implements IProyectoService {
         nombre: data.nombre,
         descripcion: data.descripcion || null, // Manejamos opcionales
         pa: data.pa || false,
-        duracionEstimada: data.duracionEstimada || 5,
+        duracionEstimada: data.duracionEstimada || 0,
         imagenUrl: data.imagenUrl || null,
         adminEncargadoId: adminId // <--- ¡AQUÍ ASIGNAMOS EL ADMIN!
         });

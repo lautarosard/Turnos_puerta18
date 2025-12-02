@@ -9,6 +9,19 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use((config) => {
+  // 1. Buscamos el token en localStorage
+  const token = localStorage.getItem('token_visitante');
+  
+  // 2. Si existe, lo agregamos al header Authorization
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 // (Opcional pero recomendado) Interceptor para errores
 // Si la API devuelve error, aquí podemos hacer un console.log automático
 api.interceptors.response.use(
