@@ -12,9 +12,9 @@ interface Props {
 // (Asegúrate de que los nombres coincidan con tus archivos .svg)
 const ICONS = [
     { name: 'robot.svg', label: 'Robot' },
-    { name: 'controller.svg', label: 'Joystick' },
-    { name: 'camera.svg', label: 'Cámara' },
-    { name: 'vr.svg', label: 'VR' },
+    { name: 'lucha.svg', label: 'Lucha' },
+    { name: 'piloto.svg', label: 'Piloto' },
+    { name: 'trabajo.svg', label: 'Trabajo' },
     { name: 'art.svg', label: 'Arte' }
 ];
 
@@ -26,7 +26,8 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {
         nombre: '',
         descripcion: '',
         duracionEstimada: 5,
-        imagenUrl: 'robot.svg' // Icono por defecto
+        imagenUrl: 'robot.svg', // Icono por defecto
+        pa: false
     });
 
     if (!isOpen) return null;
@@ -55,7 +56,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {
     };
 
     return (
-        <div className="fixed inset-0 bg-brand-dark/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-brand-background-dashboard/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white w-full max-w-md rounded-3xl p-8 relative shadow-2xl animate-in zoom-in duration-200">
 
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 font-dm-sans">
@@ -78,7 +79,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {
 
                     {/* Descripción */}
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Descripción Corta</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">Descripción</label>
                         <input
                             type="text"
                             placeholder="Ej: Interactuá con nuestro robot..."
@@ -114,9 +115,29 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {
                         </div>
                     </div>
 
+                    {/* --- SWITCH PROGRAMA ADOLESCENCIA --- */}
+                    <div className="flex items-center justify-between px-2">
+                        <span className="text-black font-medium text-sm md:text-base">
+                            ¿Pertenece a <br /> Programa Adolescencia?
+                        </span>
+
+                        {/* Toggle Switch Personalizado */}
+                        <button
+                            type="button"
+                            onClick={() => setForm({ ...form, pa: !form.pa })}
+                            className={`w-16 h-8 rounded-full p-1 transition-colors duration-300 flex items-center ${form.pa ? 'bg-brand-purple' : 'bg-gray-300'}`}
+                        >
+                            <div
+                                className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center text-[10px] font-bold text-gray-600 ${form.pa ? 'translate-x-8' : 'translate-x-0'}`}
+                            >
+                                {form.pa ? 'SI' : 'NO'}
+                            </div>
+                        </button>
+                    </div>
+
                     {/* Botones */}
                     <div className="flex gap-3 mt-4">
-                        <Button type="submit" disabled={loading} className="flex-1 bg-[#EF0886]">
+                        <Button type="submit" disabled={loading} className="flex-1 bg-[#9406F1]">
                             {loading ? 'Creando...' : 'Crear Stand'}
                         </Button>
                         <button

@@ -6,6 +6,7 @@ import { ProjectCard } from '../components/ProjectCard';
 import { AdminProjectModal } from '../components/AdminProjectModal';
 import { CreateProjectModal } from '../components/CreateProjectModal'; // <--- IMPORTAR
 import logo from '../assets/logoPuerta.svg';
+import flameLogo from './../assets/flame-icon.svg';
 
 export function SuperAdminDashboard() {
     const [proyectos, setProyectos] = useState<Proyecto[]>([]);
@@ -33,33 +34,33 @@ export function SuperAdminDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-brand-dark px-6 py-8 flex flex-col items-center relative">
+        <div className="min-h-screen bg-brand-background-dashboard px-6 py-8 flex flex-col items-center relative">
 
             {/* Header */}
             <div className="w-full flex justify-between items-center mb-8 max-w-4xl">
-                <img src={logo} alt="Puerta 18" className="w-32" />
+                <img src={logo} alt="Puerta 18" className="w-28 md:w-32" />
                 <button
                     onClick={() => {
                         localStorage.removeItem('token_admin');
                         navigate('/admin');
                     }}
-                    className="text-white/60 hover:text-white text-sm underline"
+                    className="text-white/60 hover:text-white text-sm underline mr-14"
                 >
                     Cerrar Sesión
                 </button>
             </div>
+            {/* Botón Flotante + (Abre el modal de creación) */}
+            <button
+                onClick={() => setIsCreateModalOpen(true)} // <--- AHORA ABRE EL MODAL
+                className="absolute top-[-5px] right-[-10px] w-12 h-12 bg-white/20 hover:bg-white/30 text-white rounded-xl shadow-lg flex items-center justify-center text-3xl font-light transition-all backdrop-blur-sm border border-white/10"
+            >
+                +
+            </button>
 
             <h1 className="text-white text-3xl font-bold font-dm-sans mb-8 text-center">
                 Panel de Control
             </h1>
 
-            {/* Botón Flotante + (Abre el modal de creación) */}
-            <button
-                onClick={() => setIsCreateModalOpen(true)} // <--- AHORA ABRE EL MODAL
-                className="fixed bottom-8 right-8 bg-white text-brand-purple w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-4xl font-bold z-40 hover:scale-110 transition-transform cursor-pointer"
-            >
-                +
-            </button>
 
             {/* Grilla */}
             {loading ? (
@@ -83,6 +84,11 @@ export function SuperAdminDashboard() {
                 </div>
             )}
 
+
+            {/* Fueguito Decorativo */}
+            <div className="mt-auto py-6 opacity-80">
+                <img src={flameLogo} alt="Puerta 18" className="w-12 animate-pulse" />
+            </div>
             {/* --- MODALES --- */}
 
             {/* 1. Modal de Gestión (Ya existía) */}

@@ -7,6 +7,7 @@ export default {
         'brand-purple': '#EF0886', // Pon el código HEX exacto de tu diseño (Botón)
         'brand-dark': '#300C23',   // El fondo oscuro de la derecha
         // Tus colores exactos:
+        'brand-background-dashboard': '#5A416B',   // El fondo oscuro de la derecha
         'brand-background': '#300C23', // El violeta oscuro de fondo
         'brand-robot': '#EFB654',      // Amarillo del Robot
         'brand-card': '#EF0886',       // Fucsia de las otras cajas
