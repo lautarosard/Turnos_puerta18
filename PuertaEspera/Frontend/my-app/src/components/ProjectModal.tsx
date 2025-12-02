@@ -12,7 +12,7 @@ interface ProjectModalProps {
 }
 
 export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
-    const { user } = useAuth(); // Necesitamos el ID del visitante (aunque el servicio lo saca del token)
+    //const { user } = useAuth(); // Necesitamos el ID del visitante (aunque el servicio lo saca del token)
     const [step, setStep] = useState<'info' | 'success'>('info'); // Pasos: Información -> Éxito
 
     const [loading, setLoading] = useState(false);
