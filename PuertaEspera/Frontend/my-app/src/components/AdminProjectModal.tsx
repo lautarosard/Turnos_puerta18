@@ -3,6 +3,7 @@ import type { Proyecto } from '../types';
 import { Button } from './ui/button';
 import { registerUser } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { updateProyecto } from '../services/proyectoService';
 
 interface Props {
     proyecto: Proyecto;
@@ -31,6 +32,7 @@ export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
+
         if (formData.password !== formData.confirm) {
             alert("Las contraseñas no coinciden");
             return;
@@ -38,22 +40,29 @@ export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
 
         setLoading(true);
         try {
-            // 1. Creamos el usuario
-            await registerUser({
+            // 1. CREAR EL USUARIO (El encargado)
+            // La respuesta 'newUser' trae el ID del usuario creado (newUser.user.id)
+            const newUserResponse = await registerUser({
                 username: formData.username,
                 password: formData.password,
                 nombre: formData.nombre
             });
 
-            alert(`¡Admin ${formData.nombre} registrado con éxito!`);
+            console.log("Usuario creado:", newUserResponse);
 
-            // TODO: Aquí idealmente asignaríamos este usuario al proyecto en el Backend
-            // Por ahora, el usuario queda creado suelto. 
-            // (Para la v2: endpoint para asignar usuario a proyecto)
+            // 2. ASIGNARLO AL PROYECTO ACTUAL
+            await updateProyecto(proyecto.id, {
+                adminEncargadoId: newUserResponse.user.id
+            });
 
-            onClose(); // Cerramos todo
+            // 3. ÉXITO
+            alert(`¡Listo! ${formData.nombre} es ahora el admin de ${proyecto.nombre}.`);
+
+            onClose(); // Cerramos el modal
+
         } catch (error: any) {
-            alert(error.response?.data?.message || "Error al registrar");
+            console.error(error);
+            alert(error.response?.data?.message || "Error al registrar el admin");
         } finally {
             setLoading(false);
         }

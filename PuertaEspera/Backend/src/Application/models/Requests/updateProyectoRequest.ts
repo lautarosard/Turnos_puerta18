@@ -1,5 +1,6 @@
 export interface updateProyectoRequest {
-    nombre: string
-    descripcion?: string
-    ubicacion?: string
+    nombre?: string;
+    descripcion?: string;
+    adminEncargadoId?: string;
+    pa?: boolean;
 }
