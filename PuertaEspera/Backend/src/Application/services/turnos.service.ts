@@ -6,7 +6,7 @@ import { TurnoResponse } from '../models/Responses/turnoResponse.js';
 import { Turno, EstadoTurno } from '../../Infrastructure/database/client.js';
 import { TurnoRequest } from '../models/Requests/TurnoRequest.js';
 import { IProyectoRepository } from '../../Domain/repositories/IProyectoRepository.js';
-
+import { ConflictError } from '../exceptions/AppError.js';
 export class TurnoService implements ITurnoService {
     constructor(
         private turnoRepository: ITurnoRepository, 
@@ -18,7 +18,7 @@ export class TurnoService implements ITurnoService {
         //validación de turnos
         const validarTurno = await this.turnoRepository.countTurnosActivos(request.visitanteId);
         if(validarTurno >= 3) {
-            throw new Error('Limite alcanzado: Ya tienes 2 turnos en espera');
+            throw new ConflictError('Limite alcanzado: Ya tienes 2 turnos en espera');
         }
         
         const nuevoTurno = await this.turnoRepository.create(

@@ -13,7 +13,7 @@ import { LoginResponse } from '../models/Responses/loginResponse.js';
 import { RegisterRequest } from '../models/Requests/registerRequest.js';
 import { UserResponse } from '../models/Responses/UsuarioResponse.js';
 import { RoleUsuario } from '../../Infrastructure/database/client.js';
-
+import { AuthError, ClientError } from '../exceptions/AppError.js';
 export class AuthService {
     // 4. Inyección de Dependencias
     //    El servicio NO sabe si es Prisma o qué.
@@ -32,14 +32,14 @@ export class AuthService {
 
         if (!usuario) {
             // Usamos un error genérico por seguridad
-            throw new Error('Credenciales inválidas');
+            throw new AuthError('Credenciales inválidas');
         }
 
         // --- Paso 2: Comparar la contraseña ---
         const esPasswordValida = await bcrypt.compare(input.password, usuario.password);
 
         if (!esPasswordValida) {
-            throw new Error('Credenciales inválidas');
+            throw new AuthError('Credenciales inválidas');
         }
 
         // --- Paso 3: Crear el Token (JWT) ---
@@ -76,7 +76,7 @@ export class AuthService {
         // 1. Validar si ya existe el email
         const existeUsuario = await this.usuarioRepository.findByUsername(input.username);
         if (existeUsuario) {
-            throw new Error('El email ya está registrado');
+            throw new ClientError('El email ya está registrado');
         }
 
         // 2. Hashear la contraseña

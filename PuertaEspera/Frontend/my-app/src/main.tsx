@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import { TurnoProvider } from './context/TurnoContext.tsx'
+import { GlobalErrorBoundary } from './components/GlobalErrorBoundary.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <TurnoProvider>
-        <App />
-      </TurnoProvider>
-    </AuthProvider>
+    <GlobalErrorBoundary>
+      <AuthProvider>
+        <TurnoProvider>
+          <App />
+        </TurnoProvider>
+      </AuthProvider>
+    </GlobalErrorBoundary>
   </StrictMode>,
 )
