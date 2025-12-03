@@ -9,7 +9,7 @@ export interface LoginResponse {
         username: string;
         rol: string;
     };
-} // dffsfdf
+} // 
 export interface RegisterRequest {
     username: string;
     nombre: string;
