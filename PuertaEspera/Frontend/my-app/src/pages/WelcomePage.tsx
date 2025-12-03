@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 import { Button } from './../components/ui/button';
 import logo from './../assets/logoPuerta.svg'; // Asegúrate de tener la imagen
 import bgImage from './../assets/background.jpg';
@@ -6,6 +8,15 @@ import flameLogo from './../assets/flame-icon.svg';
 
 export function WelcomePage() {
   const navigate = useNavigate();
+  const {isAuthenticated} = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/proyectos');
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) return null;
 
   return (
     // Contenedor principal con imagen de fondo

@@ -5,14 +5,20 @@ import logo from '../assets/logoPuerta.svg';
 import flameLogo from './../assets/flame-icon.svg';
 import { ingresarVisitante } from './../services/visitanteService';
 import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 
 export function VisitorLoginPage() {
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
 
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/proyectos');
+    }
+  }, [isAuthenticated, navigate]);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nombre.trim()) return;
