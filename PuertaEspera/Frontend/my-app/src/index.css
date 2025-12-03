@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Dolce Vita Heavy'; /* Le damos este nombre para usarlo luego */
-  src: url('./assets/fonts/Dolce Vita Heavy.ttf') format('truetype'); /* Ajusta el nombre del archivo si es diferente */
+  src: url('./assets/font/DolceVitaHeavyBold.woff2') format('woff2'); /* Ajusta el nombre del archivo si es diferente */
   font-weight: 700; /* Forzamos que este archivo represente el peso Bold */
   font-style: normal;
 }
