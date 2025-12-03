@@ -24,8 +24,6 @@ export function WelcomePage() {
       className="h-dvh w-full bg-cover bg-center relative flex flex-col items-center justify-evenly p-4 overflow-hidden"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
-      {/* Capa violeta semitransparente (Overlay) */}
-      <div className="absolute inset-0 bg-brand-purple/60 backdrop-blur-sm z-0"></div>
 
       {/* Contenido (z-10 para que flote sobre el overlay) */}
       <div className="z-10 flex flex-col items-center w-full max-w-md">

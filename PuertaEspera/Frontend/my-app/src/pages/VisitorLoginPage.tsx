@@ -18,7 +18,7 @@ export function VisitorLoginPage() {
       navigate('/proyectos');
     }
   }, [isAuthenticated, navigate]);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nombre.trim()) return;
@@ -70,7 +70,7 @@ export function VisitorLoginPage() {
         </form>
 
         {/* Fueguito */}
-        <div className="mt-16 md:mt-24 animate-bounce">
+        <div className="mt-16 md:mt-24 ">
           <img src={flameLogo} alt="Puerta 18" className="w-24 md:w-48" />
 
         </div>

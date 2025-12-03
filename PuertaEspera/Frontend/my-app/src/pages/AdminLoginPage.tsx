@@ -5,6 +5,7 @@ import logo from './../assets/logoPuerta.svg';
 import flameLogo from './../assets/flame-icon.svg';
 import { loginAdmin } from '../services/authService';
 import { getProyectos } from '../services/proyectoService';
+import bgImage from './../assets/background.jpg';
 
 export function AdminLoginPage() {
     const navigate = useNavigate();
@@ -60,10 +61,9 @@ export function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-screen w-full bg-brand-dark flex flex-col items-center justify-center p-6 relative overflow-hidden">
-
-            {/* Decoración de fondo (opcional, simula las luces del diseño) */}
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-purple-900/40 via-transparent to-transparent pointer-events-none"></div>
+        <div className="h-dvh w-full bg-cover bg-center relative flex flex-col items-center justify-evenly p-4 overflow-hidden"
+            style={{ backgroundImage: `url(${bgImage})` }}>
+            
 
             <div className="z-10 w-full max-w-sm flex flex-col items-center">
 
