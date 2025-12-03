@@ -14,9 +14,9 @@ export default {
         'brand-cyan': '#10DAED',       // Celeste para "3 filas simultáneas"
       },
       fontFamily: {
-        // Definimos las fuentes (luego las importamos)
+        // Aquí conectamos el nombre de clase 'font-dolce' con la fuente que definimos en CSS
+        'dolce': ['"Dolce Vita Heavy"', 'sans-serif'], 
         'dm-sans': ['"DM Sans"', 'sans-serif'],
-        'dolce': ['"Dolce Vita"', 'sans-serif'], // Nombre corto para Dolce Vita Heavy
       },
       borderRadius: {
         'card': '21px', // Tu radio específico

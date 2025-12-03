@@ -46,7 +46,7 @@ export function ProjectListPage() {
     const handleCloseProjectModal = () => {
         setSelectedProject(null);
     };
-
+//text-white text-4xl md:text-5xl font-bold font-dolce mb-6 uppercase tracking-wide
     return (
         <div className="min-h-screen bg-brand-background px-6 py-10 flex flex-col items-center">
         
@@ -58,7 +58,7 @@ export function ProjectListPage() {
 
         {/* Saludo y Textos */}
         <div className="text-center mb-12 w-full max-w-2xl">
-            <h1 className="text-white text-4xl md:text-5xl font-bold font-dolce mb-6 uppercase tracking-wide">
+            <h1 className="font-dolce font-bold text-[64px] leading-none tracking-normal text-white">
             BIENVENIDX {user?.nombre || "INVITADO"}!
             </h1>
             
