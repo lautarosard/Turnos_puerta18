@@ -15,7 +15,17 @@ const ICONS = [
     { name: 'lucha.svg', label: 'Lucha' },
     { name: 'piloto.svg', label: 'Piloto' },
     { name: 'trabajo.svg', label: 'Trabajo' },
-    { name: 'art.svg', label: 'Arte' }
+    { name: 'pintar.svg', label: 'Pintar' },
+    { name: 'hablar.svg', label: 'Hablar' },
+    { name: 'exs.svg', label: 'Exs' },
+    { name: 'libros.svg', label: 'Libros' },
+    { name: 'sol.svg', label: 'Sol' },
+    { name: 'proyector.svg', label: 'Proyector' },
+    { name: 'editar.svg', label: 'Editar' },
+    { name: 'camara.svg', label: 'Camara' },
+    { name: 'estrella.svg', label: 'Estrella' },
+    { name: 'peli.svg', label: 'Peli' }
+
 ];
 
 export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {

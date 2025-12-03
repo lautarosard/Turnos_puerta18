@@ -8,9 +8,9 @@ export class PrismaProyectoRepository implements IProyectoRepository {
     async create(data: Omit<Proyecto, 'id'>): Promise<Proyecto> {
         return await prisma.proyecto.create({
             data: {
-            ...data, // 1. Copiamos nombre, descripción, etc.
-            duracionEstimada: data.duracionEstimada ?? 5 // 2. Definimos la duración AQUÍ DENTRO
-        }
+                ...data, // 1. Copiamos nombre, descripción, etc.
+                duracionEstimada: data.duracionEstimada ?? 5 // 2. Definimos la duración AQUÍ DENTRO
+            }
         });
     }
 
@@ -26,7 +26,12 @@ export class PrismaProyectoRepository implements IProyectoRepository {
 
     async getById(id: string): Promise<Proyecto | null> {
         return await prisma.proyecto.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                adminEncargado: {
+                    select: { id: true, nombre: true, username: true } // Traemos nombre e ID
+                }
+            }
         });
     }
 

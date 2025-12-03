@@ -49,9 +49,9 @@ export function SuperAdminDashboard() {
                     Cerrar Sesión
                 </button>
             </div>
-            {/* Botón Flotante + (Abre el modal de creación) */}
+            {/*  modal de creación */}
             <button
-                onClick={() => setIsCreateModalOpen(true)} // <--- AHORA ABRE EL MODAL
+                onClick={() => setIsCreateModalOpen(true)}
                 className="absolute top-[-5px] right-[-10px] w-12 h-12 bg-white/20 hover:bg-white/30 text-white rounded-xl shadow-lg flex items-center justify-center text-3xl font-light transition-all backdrop-blur-sm border border-white/10"
             >
                 +
@@ -66,7 +66,7 @@ export function SuperAdminDashboard() {
             {loading ? (
                 <div className="text-white animate-pulse">Cargando stands...</div>
             ) : (
-                <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
+                <div className="w-full max-w-4xl grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
                     {proyectos.map((proy) => (
                         <div key={proy.id} className="relative group">
                             <ProjectCard
