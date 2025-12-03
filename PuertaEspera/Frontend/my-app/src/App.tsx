@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { WelcomePage } from './pages/WelcomePage';
 import { VisitorLoginPage } from './pages/VisitorLoginPage';
 import { ProjectListPage } from './pages/ProjectListPage';
@@ -23,6 +23,8 @@ function App() {
 
         {/* stand individual: */}
         <Route path="/admin/stand/:id" element={<StandAdminPage />} />
+        <Route path="/admin/stand" element={<Navigate to="/admin" replace />} />
+
       </Routes>
     </BrowserRouter>
   )

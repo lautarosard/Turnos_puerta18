@@ -4,6 +4,7 @@ import { Button } from './../components/ui/button';
 import logo from './../assets/logoPuerta.svg';
 import flameLogo from './../assets/flame-icon.svg';
 import { loginAdmin } from '../services/authService';
+import { getProyectos } from '../services/proyectoService';
 
 export function AdminLoginPage() {
     const navigate = useNavigate();
@@ -20,17 +21,34 @@ export function AdminLoginPage() {
         setLoading(true);
 
         try {
+            console.log("1. Intentando login con:", username);
             const data = await loginAdmin(username, password);
+            console.log("2. Login exitoso. Rol:", data.user.rol);
 
-            // 1. Guardamos el token de Admin (usamos otra key para no mezclar con visitantes)
             localStorage.setItem('token_admin', data.token);
             localStorage.setItem('user_admin', JSON.stringify(data.user));
 
-            // 2. Redirigimos según el rol
             if (data.user.rol === 'SUPER_ADMIN') {
-                navigate('/admin/dashboard'); // A donde va el Jefe (Tú)
+                navigate('/admin/dashboard');
             } else {
-                navigate('/admin/stand'); // A donde va el Encargado del Stand
+                console.log("3. Buscando stand asignado...");
+                // Buscamos cuál es su stand
+                try {
+                    const misProyectos = await getProyectos();
+                    console.log("4. Proyectos encontrados:", misProyectos); // <--- ESTO ES LO IMPORTANTE
+
+                    if (misProyectos && misProyectos.length > 0) {
+                        console.log("5. Redirigiendo al stand:", misProyectos[0].id);
+                        navigate(`/admin/stand/${misProyectos[0].id}`);
+                    } else {
+                        console.warn("ERROR: Lista de proyectos vacía");
+                        setError('No tienes ningún stand asignado. Pide al Super Admin que te asigne uno.');
+                        localStorage.removeItem('token_admin');
+                    }
+                } catch (err) {
+                    console.error("Error buscando proyectos:", err);
+                    setError('Error de conexión al buscar tu stand.');
+                }
             }
 
         } catch (err: any) {

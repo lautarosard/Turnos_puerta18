@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from "socket.io-client";
-import { getProyectos } from '../services/proyectoService';
-import { updateProyecto } from '../services/proyectoService'; // Necesario para "Eliminar" admin
+import { getProyectos, eliminarProyecto, updateProyecto } from '../services/proyectoService'; // <--- Importamos funciones
 import { getTurnosDeProyecto, llamarTurno, finalizarTurno, cancelarTurno } from '../services/turnoService';
 import type { Proyecto, Turno } from '../types';
 import logo from '../assets/logoPuerta.svg';
 import flameLogo from '../assets/flame-icon.svg';
-
+import { CreateProjectModal } from '../components/CreateProjectModal'; // <--- Importamos el Modal
+import { AddManualVisitorModal } from '../components/AddManualVisitorModal';
 const SOCKET_URL = import.meta.env.VITE_API_URL.replace('/api', '');
 const socket = io(SOCKET_URL);
 
@@ -19,12 +19,13 @@ export function StandAdminPage() {
     const [turnos, setTurnos] = useState<Turno[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // --- ESTADOS PARA SUPER ADMIN ---
+    // Estados Super Admin
     const [userRole, setUserRole] = useState<string>('');
     const [currentUserId, setCurrentUserId] = useState<string>('');
-    const [showDeleteModal, setShowDeleteModal] = useState(false); // Modal de confirmación
-
-    // 1. Detectar Rol y Usuario al cargar
+    const [showDeleteModal, setShowDeleteModal] = useState(false); // Eliminar Admin
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // <--- NUEVO: Modal Editar
+    const [isManualAddOpen, setIsManualAddOpen] = useState(false);
+    // 1. Detectar Rol
     useEffect(() => {
         const userStr = localStorage.getItem('user_admin');
         if (userStr) {
@@ -34,36 +35,30 @@ export function StandAdminPage() {
         }
     }, []);
 
-    // 2. Definir color de fondo según el ROL
-    // Super Admin = Violeta (#5A416B), Encargado = Dorado (#D29C3C)
     const bgClass = userRole === 'SUPER_ADMIN' ? 'bg-[#5A416B]' : 'bg-[#D29C3C]';
 
-    // 3. Cargar Datos
-    useEffect(() => {
+    // 2. Función para cargar datos (la sacamos afuera para poder reusarla al editar)
+    const fetchData = async () => {
         if (!id) return;
+        try {
+            const todos = await getProyectos();
+            const actual = todos.find(p => p.id === id);
+            if (actual) setProyecto(actual);
 
-        const fetchData = async () => {
-            try {
-                // Traemos TODOS para filtrar (o usa getById si ya actualizaste el servicio para usar el endpoint específico)
-                // NOTA: Para que aparezca el nombre del encargado, asegúrate que tu backend responda con 'adminEncargado'
-                // Si usas getProyectos() (getAll), el repositorio ya lo incluye.
-                const todos = await getProyectos();
-                const actual = todos.find(p => p.id === id);
-                if (actual) setProyecto(actual);
+            const listaTurnos = await getTurnosDeProyecto(id);
+            setTurnos(listaTurnos);
+        } catch (error) {
+            console.error("Error", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-                const listaTurnos = await getTurnosDeProyecto(id);
-                setTurnos(listaTurnos);
-            } catch (error) {
-                console.error("Error cargando datos", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
+    // 3. Efecto inicial y Sockets
+    useEffect(() => {
         fetchData();
-
         socket.emit('unirse-proyecto', id);
-        // ... (Listeners de socket igual que antes) ...
+
         const handleNuevoTurno = (turno: Turno) => setTurnos(prev => [...prev, turno]);
         const handleUpdateTurno = (turnoActualizado: Turno) => {
             setTurnos(prev => {
@@ -73,6 +68,7 @@ export function StandAdminPage() {
                 return prev.map(t => t.id === turnoActualizado.id ? turnoActualizado : t);
             });
         };
+
         socket.on('nuevo-turno', handleNuevoTurno);
         socket.on('turno-actualizado', handleUpdateTurno);
         return () => {
@@ -81,7 +77,7 @@ export function StandAdminPage() {
         };
     }, [id]);
 
-    // --- ACCIONES DE TURNO (Igual que antes) ---
+    // --- ACCIONES DE TURNO ---
     const handleLlamar = async (turnoId: string) => { if (id) await llamarTurno(turnoId, id); };
     const handleFinalizar = async (turnoId: string) => { if (id) await finalizarTurno(turnoId, id); };
     const handleCancelar = async (turnoId: string) => { if (id && confirm("¿Cancelar turno?")) await cancelarTurno(turnoId, id); };
@@ -90,30 +86,31 @@ export function StandAdminPage() {
     const handleEliminarEncargado = async () => {
         if (!proyecto || !currentUserId) return;
         try {
-            // Lógica: Asignamos el proyecto al Super Admin (Tú) para "sacar" al otro
-            await updateProyecto(proyecto.id, {
-                adminEncargadoId: currentUserId
-            });
-
+            await updateProyecto(proyecto.id, { adminEncargadoId: currentUserId });
             alert("Encargado eliminado. Ahora tú estás a cargo.");
             setShowDeleteModal(false);
-
-            // Actualizamos la UI localmente
-            setProyecto({
-                ...proyecto,
-                adminEncargado: { id: currentUserId, nombre: "Mí (Super Admin)", username: "yo" }
-            });
-
+            setProyecto({ ...proyecto, adminEncargado: { id: currentUserId, nombre: "Mí (Super Admin)", username: "yo" } });
         } catch (error) {
             alert("Error al eliminar encargado");
         }
     };
 
-    // Filtros visuales
+    // --- NUEVO: ELIMINAR PROYECTO ---
+    const handleDeleteProject = async () => {
+        if (!id) return;
+        if (!confirm("⚠️ ¿ESTÁS SEGURO?\n\nVas a eliminar el stand completo y su historial. Esta acción no se puede deshacer.")) return;
+
+        try {
+            await eliminarProyecto(id);
+            alert("Proyecto eliminado.");
+            navigate('/admin/dashboard');
+        } catch (error) {
+            alert("Error al eliminar proyecto.");
+        }
+    };
+
     const turnoActual = turnos.find(t => t.estado === 'LLAMADO');
-    const filaEspera = turnos
-        .filter(t => t.estado === 'PENDIENTE')
-        .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+    const filaEspera = turnos.filter(t => t.estado === 'PENDIENTE').sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
     if (loading) return <div className="text-white text-center mt-20">Cargando...</div>;
 
@@ -123,18 +120,43 @@ export function StandAdminPage() {
             {/* Header */}
             <div className="w-full flex justify-between items-center mb-6 max-w-md">
                 <button onClick={() => navigate(-1)} className="text-white text-3xl">←</button>
-                <img src={logo} alt="Puerta 18" className="w-24" />
-                <div className="w-8"></div>
+                <img src={logo} alt="Puerta 18" className="w-28 md:w-32" />
+
+                <button
+                    onClick={() => setIsManualAddOpen(true)}
+                    className="w-10 h-10 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center justify-center text-2xl shadow-lg border border-white/10 transition-colors"
+                >
+                    +
+                </button>
+
             </div>
 
-            {/* Título */}
-            <div className="text-center mb-6">
-                <h2 className="text-white font-dm-sans text-sm md:text-base uppercase tracking-widest opacity-80 mb-1">
+            {/* Título y Acciones de Edición */}
+            <div className="text-center mb-6 w-full max-w-md relative">
+                <h2 className="text-white font-dm-sans text-sm uppercase tracking-widest opacity-80 mb-1">
                     ADMINISTRANDO
                 </h2>
-                <h1 className="text-white font-dm-sans text-2xl font-bold leading-tight">
+                <h1 className="text-white font-dm-sans text-2xl font-bold leading-tight mb-2">
                     {proyecto?.nombre}
                 </h1>
+
+                {/* --- AQUÍ ESTÁN LOS BOTONES DE EDICIÓN (SOLO SUPER ADMIN) --- */}
+                {userRole === 'SUPER_ADMIN' && (
+                    <div className="flex justify-center gap-3 mt-2">
+                        <button
+                            onClick={() => setIsEditModalOpen(true)}
+                            className="bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20 transition-colors"
+                        >
+                            ✏️ Editar Info
+                        </button>
+                        <button
+                            onClick={handleDeleteProject}
+                            className="bg-red-500/20 hover:bg-red-500/40 text-red-200 text-xs font-bold px-3 py-1 rounded-full border border-red-500/30 transition-colors"
+                        >
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                )}
             </div>
 
             <div className="w-full max-w-md flex flex-col gap-6 pb-20">
@@ -143,7 +165,7 @@ export function StandAdminPage() {
                 {userRole === 'SUPER_ADMIN' && proyecto?.adminEncargado && (
                     <div className="w-full">
                         <label className="text-white/80 text-xs font-bold uppercase mb-2 block">
-                            ADMIN “Desbloqueá tu primer trabajo”
+                            ENCARGADO ACTUAL
                         </label>
 
                         <div className="bg-white/90 rounded-xl p-3 flex justify-between items-center shadow-md">
@@ -176,7 +198,6 @@ export function StandAdminPage() {
 
                     {turnoActual ? (
                         <div className="bg-white rounded-2xl p-4 shadow-lg">
-                            {/* ... Datos del turno actual (igual que antes) ... */}
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-xl font-bold text-gray-900">{turnoActual.visitanteNombre}</span>
                                 <span className="text-xl font-bold text-brand-purple">#{turnoActual.numero}</span>
@@ -242,23 +263,35 @@ export function StandAdminPage() {
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
                     <div className="bg-white rounded-[21px] p-6 text-center max-w-xs w-full shadow-2xl animate-in zoom-in">
-                        <button
-                            onClick={() => setShowDeleteModal(false)}
-                            className="absolute top-4 right-4 text-gray-400"
-                        >✕</button>
-
+                        <button onClick={() => setShowDeleteModal(false)} className="absolute top-4 right-4 text-gray-400">✕</button>
                         <h3 className="text-lg font-bold text-brand-dark mb-6 font-dm-sans uppercase leading-tight">
                             ¿Querés eliminar <br /> a este admin?
                         </h3>
-
-                        <button
-                            onClick={handleEliminarEncargado}
-                            className="w-full bg-[#A822E5] hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-lg mb-0"
-                        >
+                        <button onClick={handleEliminarEncargado} className="w-full bg-[#A822E5] hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-lg mb-0">
                             Confirmar
                         </button>
                     </div>
                 </div>
+            )}
+
+            {/* --- NUEVO: MODAL EDICIÓN --- */}
+            {isEditModalOpen && proyecto && (
+                <CreateProjectModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSuccess={() => {
+                        fetchData(); // Recargamos la info para ver los cambios
+                    }}
+                    projectToEdit={proyecto} // Le pasamos el proyecto para que rellene los campos
+                />
+            )}
+
+            {id && (
+                <AddManualVisitorModal
+                    isOpen={isManualAddOpen}
+                    onClose={() => setIsManualAddOpen(false)}
+                    proyectoId={id}
+                />
             )}
         </div>
     );

@@ -5,7 +5,7 @@ export interface ProyectoResponse {
     nombre: string;
     descripcion?: string;
     pa?: boolean;
-    duracionEstimada: number;
+    duracionEstimada?: number;
     imagenUrl?: string | null;
 }
 
@@ -22,6 +22,8 @@ export interface UpdateProjectRequest {
     descripcion?: string;
     adminEncargadoId?: string; // <--- Importante
     pa?: boolean;
+    duracionEstimada?: number;
+    imagenUrl?: string | null;
 }
 
 export const crearProyecto = async (data: CreateProjectRequest): Promise<ProyectoResponse> => {
@@ -38,4 +40,8 @@ export const getProyectos = async (): Promise<ProyectoResponse[]> => {
 export const updateProyecto = async (id: string, data: UpdateProjectRequest): Promise<ProyectoResponse> => {
     const { data: proyecto } = await api.put<ProyectoResponse>(`/proyectos/${id}`, data);
     return proyecto;
+};
+
+export const eliminarProyecto = async (id: string): Promise<void> => {
+    await api.delete(`/proyectos/${id}`);
 };

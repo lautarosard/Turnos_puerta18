@@ -7,8 +7,15 @@ export interface Proyecto {
     nombre: string;
     descripcion?: string; // Opcional en DB, pero el front suele recibir string vacío si es null
     ubicacion?: string;
-    duracionEstimada: number;
+    duracionEstimada?: number;
     imagenUrl?: string | null; // Puede venir null si no tiene ícono
+    pa?: boolean;
+    // Agregamos esto opcional
+    adminEncargado?: {
+        id: string;
+        nombre: string;
+        username: string;
+    };
 }
 
 // Ya que estamos, definimos también el Turno para cuando lo usemos
@@ -20,20 +27,4 @@ export interface Turno {
     visitanteNombre: string;
     tiempoDeEspera?: number;
     proyectoId: string;
-}
-
-export interface Proyecto {
-    id: string;
-    nombre: string;
-    descripcion?: string;
-    ubicacion?: string;
-    duracionEstimada: number;
-    imagenUrl?: string | null;
-    pa?: boolean;
-    // Agregamos esto opcional
-    adminEncargado?: {
-        id: string;
-        nombre: string;
-        username: string;
-    };
 }
