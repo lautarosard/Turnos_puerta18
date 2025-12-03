@@ -51,7 +51,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess }: Props) {
                 descripcion: form.descripcion,
                 duracionEstimada: Number(form.duracionEstimada),
                 imagenUrl: form.imagenUrl,
-                pa: true
+                pa: form.pa
             });
 
             // Si sale bien:

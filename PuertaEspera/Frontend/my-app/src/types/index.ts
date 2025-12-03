@@ -21,3 +21,19 @@ export interface Turno {
     tiempoDeEspera?: number;
     proyectoId: string;
 }
+
+export interface Proyecto {
+    id: string;
+    nombre: string;
+    descripcion?: string;
+    ubicacion?: string;
+    duracionEstimada: number;
+    imagenUrl?: string | null;
+    pa?: boolean;
+    // Agregamos esto opcional
+    adminEncargado?: {
+        id: string;
+        nombre: string;
+        username: string;
+    };
+}

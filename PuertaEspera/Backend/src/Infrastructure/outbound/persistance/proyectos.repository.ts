@@ -18,7 +18,7 @@ export class PrismaProyectoRepository implements IProyectoRepository {
         return await prisma.proyecto.findMany({
             include: {
                 adminEncargado: {
-                    select: { nombre: true }
+                    select: { id: true, nombre: true, username: true }
                 }
             }
         });
@@ -40,6 +40,11 @@ export class PrismaProyectoRepository implements IProyectoRepository {
         return await prisma.proyecto.findMany({
             where: {
                 adminEncargadoId: adminId
+            },
+            include: {
+                adminEncargado: {
+                    select: { id: true, nombre: true, username: true }
+                }
             }
         });
     }
