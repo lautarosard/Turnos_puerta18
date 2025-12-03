@@ -12,7 +12,7 @@ interface Props {
 const COLORS = [
 'bg-brand-cyan text-brand-dark',   
 'bg-brand-robot text-brand-dark',  
-'bg-brand-card text-white'         
+'bg-brand-card2 text-white'         
 ];
 
 export function ActiveTicketsList({ proyectos }: Props) {
@@ -52,7 +52,7 @@ export function ActiveTicketsList({ proyectos }: Props) {
     if (turnosActivos.length === 0) return null;
     return (
         <>
-        {/* --- 1. LISTA DE CARTELITOS (Arriba a la derecha) --- */}
+        {/* --- 1. LISTA DE CARTELITOS (Arriba centrado) --- */}
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40 flex flex-col gap-3 w-[95%] max-w-lg pointer-events-none items-center">
             {/* pointer-events-none deja hacer clic "a través" del contenedor, 
                 pero reactivamos los clicks en los items con pointer-events-auto */}
@@ -63,13 +63,13 @@ export function ActiveTicketsList({ proyectos }: Props) {
             return (
                 <div 
                 key={turno.id} 
-                className={`${colorClass} px-10 py-3 rounded-xl shadow-lg relative pointer-events-auto animate-in slide-in-from-right duration-300`}
+                className={`${colorClass} w-[90%] px-4 py-2 rounded-xl shadow-lg relative pointer-events-auto animate-in slide-in-from-right duration-300`}
                 >
                 
                 {/* Botón X para cancelar */}
                 <button 
                     onClick={() => setTurnoParaCancelar(turno.id)} 
-                    className="absolute top-3 right-3 opacity-60 hover:opacity-100 font-bold text-lg"
+                    className="absolute top-1 right-3 opacity-60 hover:opacity-100 font-bold text-lg"
                 >
                     ✕
                 </button>

@@ -10,7 +10,8 @@ export default {
         'brand-background-dashboard': '#5A416B',   // El fondo oscuro de la derecha
         'brand-background': '#300C23', // El violeta oscuro de fondo
         'brand-robot': '#EFB654',      // Amarillo del Robot
-        'brand-card': '#EF0886',       // Fucsia de las otras cajas
+        'brand-card': '#854DC1',       // Fucsia de las otras cajas
+        'brand-card2': '#EF0886',       // Fucsia de las otras cajas
         'brand-cyan': '#10DAED',       // Celeste para "3 filas simultáneas"
       },
       fontFamily: {
