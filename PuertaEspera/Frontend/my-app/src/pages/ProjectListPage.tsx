@@ -54,7 +54,7 @@ export function ProjectListPage() {
         <ActiveTicketsList proyectos={proyectos}/>
 
         {/* Logo */}
-        <img src={logo} alt="Puerta 18" className="w-1/2 max-w-[100px] md:max-w-[300px] h-auto mx-auto mb-8 object-contain" />
+        <img src={logo} alt="Puerta 18" className="w-1/2 max-w-[200px] md:max-w-[300px] h-auto mx-auto mb-8 object-contain" />
 
         {/* Saludo y Textos */}
         <div className="text-center mb-12 w-full max-w-2xl">
