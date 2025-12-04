@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 import { Button } from './../components/ui/button';
 import logo from './../assets/logoPuerta.svg'; // Asegúrate de tener la imagen
 import bgImage from './../assets/background.jpg';
@@ -6,6 +8,15 @@ import flameLogo from './../assets/flame-icon.svg';
 
 export function WelcomePage() {
   const navigate = useNavigate();
+  const {isAuthenticated} = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/proyectos');
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) return null;
 
   return (
     // Contenedor principal con imagen de fondo
@@ -13,8 +24,6 @@ export function WelcomePage() {
       className="h-dvh w-full bg-cover bg-center relative flex flex-col items-center justify-evenly p-4 overflow-hidden"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
-      {/* Capa violeta semitransparente (Overlay) */}
-      <div className="absolute inset-0 bg-brand-purple/60 backdrop-blur-sm z-0"></div>
 
       {/* Contenido (z-10 para que flote sobre el overlay) */}
       <div className="z-10 flex flex-col items-center w-full max-w-md">

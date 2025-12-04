@@ -1,14 +1,21 @@
-// src/Infrastructure/middlewares/error.middleware.ts
 import { Request, Response, NextFunction } from 'express';
+import { AppError } from '../../Application/exceptions/AppError.js';
 
 export const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error('Error capturado:', error.message); // Log para ti
-
-    // Lógica de traducción de errores
-    if (error.message === 'Credenciales inválidas') {
-        return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
+    
+    // 1. Si el error es una de nuestras excepciones controladas
+    if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ 
+            message: error.message,
+            status: 'error' 
+        });
     }
 
-  // Error genérico por defecto
-    res.status(500).json({ message: 'Ocurrió un error interno en el servidor' });
+    // 2. Si es un error desconocido (Crash, Bug, DB caída)
+    console.error('Error Crítico:', error); // Logueamos para nosotros
+
+    return res.status(500).json({ 
+        message: 'Ocurrió un error interno en el servidor',
+        status: 'fail'
+    });
 };

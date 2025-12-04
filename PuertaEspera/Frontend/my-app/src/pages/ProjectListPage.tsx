@@ -46,7 +46,7 @@ export function ProjectListPage() {
     const handleCloseProjectModal = () => {
         setSelectedProject(null);
     };
-
+//text-white text-4xl md:text-5xl font-bold font-dolce mb-6 uppercase tracking-wide
     return (
         <div className="min-h-screen bg-brand-background px-6 py-10 flex flex-col items-center">
         
@@ -54,15 +54,15 @@ export function ProjectListPage() {
         <ActiveTicketsList proyectos={proyectos}/>
 
         {/* Logo */}
-        <img src={logo} alt="Puerta 18" className="w-64 mb-12" />
+        <img src={logo} alt="Puerta 18" className="w-1/2 max-w-[200px] md:max-w-[300px] h-auto mx-auto mb-8 object-contain" />
 
         {/* Saludo y Textos */}
         <div className="text-center mb-12 w-full max-w-2xl">
-            <h1 className="text-white text-4xl md:text-5xl font-bold font-dolce mb-6 uppercase tracking-wide">
+            <h1 className="font-dolce font-bold text-[36px] leading-none tracking-normal text-white">
             BIENVENIDX {user?.nombre || "INVITADO"}!
             </h1>
             
-            <p className="text-white font-dm-sans text-xl md:text-2xl leading-snug">
+            <p className="mt-2 text-white font-dm-sans text-[15px] md:text-2xl leading-snug">
             Tenés un límite de{' '}
             <span className="text-brand-cyan italic">3 filas simultáneas</span>.
             <br />

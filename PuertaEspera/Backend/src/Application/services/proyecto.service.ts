@@ -8,7 +8,7 @@ import { CreateProjectRequest } from '../models/Requests/createProyectoRequest.j
 import { updateProyectoRequest } from '../models/Requests/updateProyectoRequest.js';
 import { ProyectoResponse } from '../models/Responses/ProyectoResponse.js';
 import { Proyecto } from '../../Infrastructure/database/client.js';
-
+import { ClientError, NotFoundError } from '../exceptions/AppError.js';
 export class ProyectoService implements IProyectoService {
     constructor(private proyectoRepository: IProyectoRepository) { }
 
@@ -19,7 +19,7 @@ export class ProyectoService implements IProyectoService {
 
         // 1. Validaciones de negocio (opcional)
         if (await this.proyectoRepository.exist(data.nombre)) {
-            throw new Error('Ya existe un proyecto con ese nombre');
+            throw new ClientError('Ya existe un proyecto con ese nombre');
         }
         // 2. Preparamos los datos para el repositorio
         // El repo espera los datos del proyecto + el adminEncargadoId

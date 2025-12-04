@@ -10,7 +10,7 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
 }
-
+//asdfsdf
 export function AdminProjectModal({ proyecto, isOpen, onClose }: Props) {
     const navigate = useNavigate();
     // Controlamos qué se ve dentro del modal: 'menu' | 'registro'
