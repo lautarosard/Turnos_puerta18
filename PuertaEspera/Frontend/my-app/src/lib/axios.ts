@@ -9,8 +9,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // CAMBIO CLAVE:
-  // Buscamos primero el token de ADMIN. Si no existe, buscamos el de VISITANTE.
+  // Buscamos primero el token de ADMIN, luego el de VISITANTE
   const token = localStorage.getItem('token_admin') || localStorage.getItem('token_visitante');
 
   if (token) {
@@ -25,12 +24,24 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Esto te ayuda a debuguear en consola
     console.error("Error Axios:", error.response?.data || error.message);
 
-    // Opcional: Si el token expiró (401), podrías redirigir al login
-    if (error.response?.status === 401) {
-      // console.log("Sesión expirada");
+    // MEJORA: Detectar Token Vencido (401 o 403)
+    if (error.response?.status === 401 || error.response?.status === 403) {
+
+      // 1. Limpiamos la basura vieja
+      localStorage.removeItem('token_admin');
+      localStorage.removeItem('user_admin');
+      localStorage.removeItem('token_visitante');
+      localStorage.removeItem('datos_visitante');
+
+      // 2. Opcional: Redirigir al inicio para que se logueen de nuevo
+      // Usamos window.location porque aquí no tenemos acceso al 'navigate' de React
+      // Solo redirigimos si NO estamos ya en una página de login (para evitar bucles)
+      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/admin')) {
+        alert("Tu sesión expiró. Por favor ingresá nuevamente.");
+        window.location.href = '/';
+      }
     }
 
     return Promise.reject(error);
