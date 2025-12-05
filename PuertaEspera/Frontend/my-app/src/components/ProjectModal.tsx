@@ -58,7 +58,7 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
         <div className="bg-white w-full max-w-sm rounded-3xl p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200">
             
             {/* Botón Cerrar (X) - Solo visible en el paso 'info' */}
-            {step === 'info' && (
+            {step === 'info' && !loading && ( // <--- AGREGAMOS !loading AQUÍ
             <button 
                 onClick={onClose}
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl"
