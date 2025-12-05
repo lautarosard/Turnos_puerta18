@@ -31,14 +31,17 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
         setLoading(true);
         try {
         await solicitarTurno(proyecto.id);
-        
-        // 2. ¡AQUÍ ESTÁ LA CLAVE!
-        // Apenas tenemos éxito, recargamos los turnos para que aparezca el cartelito
         await refrescarTurnos(); 
-        
-        setStep('success'); // Mostramos "Confirmaste tu lugar"
+        setStep('success');
         } catch (error: any) {
-        alert(error.message || "Error al unirse");
+        // Capturamos el mensaje que mandamos desde el Back
+        const mensaje = error.response?.data?.message || error.message;
+        
+        if (mensaje.includes("cupo")) {
+            alert("⛔ ¡Cupos agotados!\n\nEste taller ya alcanzó las 35 personas. Por favor espera a que termine la ronda actual para anotarte.");
+        } else {
+            alert(mensaje);
+        }
         onClose();
         } finally {
         setLoading(false);

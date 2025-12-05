@@ -29,6 +29,7 @@ export class ProyectoService implements IProyectoService {
             pa: data.pa ?? false,
             duracionEstimada: data.duracionEstimada || 0,
             imagenUrl: data.imagenUrl || null,
+            capacidadMaxima: data.capacidadMaxima || 1,
             adminEncargadoId: adminId // <--- ¡AQUÍ ASIGNAMOS EL ADMIN!
         });
 
@@ -96,6 +97,7 @@ export class ProyectoService implements IProyectoService {
             pa: proyecto.pa || false,
             duracionEstimada: proyecto.duracionEstimada,
             imagenUrl: proyecto.imagenUrl || '',
+            capacidadMaxima: proyecto.capacidadMaxima,
             adminEncargadoId: proyecto.adminEncargadoId
             // Opcional: Podrías devolver el nombre del admin si tu repo lo trajo (include)
             // adminNombre: (proyecto as any).adminEncargado?.nombre 

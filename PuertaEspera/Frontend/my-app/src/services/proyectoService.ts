@@ -6,6 +6,7 @@ export interface ProyectoResponse {
     descripcion?: string;
     pa?: boolean;
     duracionEstimada?: number;
+    capacidadMaxima?: number;
     imagenUrl?: string | null;
 }
 
@@ -14,6 +15,7 @@ export interface CreateProjectRequest {
     descripcion?: string;
     pa?: boolean;
     duracionEstimada?: number;
+    capacidadMaxima?: number;
     imagenUrl?: string | null;
 }
 
@@ -23,6 +25,7 @@ export interface UpdateProjectRequest {
     adminEncargadoId?: string; // <--- Importante
     pa?: boolean;
     duracionEstimada?: number;
+    capacidadMaxima?: number;
     imagenUrl?: string | null;
 }
 

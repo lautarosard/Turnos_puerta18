@@ -4,6 +4,8 @@ export interface ProyectoResponse {
     descripcion?: string;
     pa: boolean;
     duracionEstimada?: number;
+    capacidadMaxima?: number;
     adminEncargadoId: string;
     imagenUrl?: string;
+
 }

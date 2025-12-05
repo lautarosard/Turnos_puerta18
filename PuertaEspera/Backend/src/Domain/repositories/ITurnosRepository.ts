@@ -10,7 +10,7 @@ export interface ITurnoRepository{
     countTurnosActivos(visitanteId:String): Promise<number>;
 
     updateEstado(id:string, estado: EstadoTurno):Promise<Turno>;
-    
+    countActiveByProject(proyectoId: string): Promise<number>;
     countTurnosPendientesPrevios(proyectoId: string, numeroTurno: number): Promise<number>;
     existeTurnoActivo(visitanteId: string, proyectoId: string): Promise<boolean>;
 }

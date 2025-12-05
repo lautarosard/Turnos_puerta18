@@ -15,36 +15,56 @@ export class TurnoService implements ITurnoService {
         ) {} 
     
     async solicitarTurno(request: TurnoRequest): Promise<TurnoResponse> {
-        //validación de turnos
+        // 1. Validaciones de usuario (Límite de 3 turnos)
         const validarTurno = await this.turnoRepository.countTurnosActivos(request.visitanteId);
         if(validarTurno >= 3) {
-            throw new ConflictError('Limite alcanzado: Ya tienes 3 turnos en espera');
+            // Asegúrate de tener ConflictError importado o usa Error
+            throw new Error('Límite alcanzado: Ya tienes 3 turnos en espera'); 
         }
+        
         const yaTieneTurno = await this.turnoRepository.existeTurnoActivo(request.visitanteId, request.proyectoId);
         if (yaTieneTurno) {
             throw new Error('Ya tienes un turno activo para este stand.');
         }
+
+        // 2. Validaciones de Proyecto y Cupo
+        // Usamos esta variable 'proyectoVerificado' para todo, no la busques de nuevo abajo
+        const proyectoVerificado = await this.proyectoRepository.getById(request.proyectoId);
         
-        const nuevoTurno = await this.turnoRepository.create(
-            {
-                visitanteId: request.visitanteId,
-                proyectoId: request.proyectoId
-            }
-        );
+        if (!proyectoVerificado) {
+            throw new Error('El proyecto no existe.');
+        }
 
-        // A. Buscamos el proyecto usando SU repositorio (ya no prisma directo)
-        const proyecto = await this.proyectoRepository.getById(request.proyectoId);
-        
-        // B. Contamos anteriores usando el NUEVO método del repo de turnos
-        const turnosAntes = await this.turnoRepository.countTurnosPendientesPrevios(
-            request.proyectoId, 
-            nuevoTurno.numero
-        );
+        const genteEnElStand = await this.turnoRepository.countActiveByProject(request.proyectoId);
 
-        // C. Matemática
-        const tiempoEstimado = turnosAntes * (proyecto?.duracionEstimada || 15);
+        // Si es Taller (>1) y está lleno, rebotamos
+        if (proyectoVerificado.capacidadMaxima > 1 && genteEnElStand >= proyectoVerificado.capacidadMaxima) {
+            throw new Error(`El cupo para esta función está completo (${proyectoVerificado.capacidadMaxima} personas). Espera a que termine la actividad actual.`);
+        }
 
-        // 4. Mapear y responder
+        // 3. Crear el turno
+        const nuevoTurno = await this.turnoRepository.create({
+            visitanteId: request.visitanteId,
+            proyectoId: request.proyectoId
+        });
+
+        // 4. --- NUEVO CÁLCULO DE TIEMPO ---
+        let tiempoEstimado = 0;
+
+        if (proyectoVerificado.capacidadMaxima > 1) {
+            // CASO TALLER: El tiempo de espera es fijo (lo que dura la actividad)
+            // Todos entran juntos, así que el "próximo" grupo espera la duración total.
+            tiempoEstimado = proyectoVerificado.duracionEstimada;
+        } else {
+            // CASO FILA INDIA: Calculamos cuántos hay antes * duración
+            const turnosAntes = await this.turnoRepository.countTurnosPendientesPrevios(
+                request.proyectoId, 
+                nuevoTurno.numero
+            );
+            tiempoEstimado = turnosAntes * (proyectoVerificado.duracionEstimada || 15);
+        }
+
+        // 5. Mapear y responder
         const response = this.mapToResponse(nuevoTurno, tiempoEstimado);
         
         this.io.to(request.proyectoId).emit('nuevo-turno', response);

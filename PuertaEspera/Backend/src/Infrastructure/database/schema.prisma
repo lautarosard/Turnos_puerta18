@@ -45,7 +45,8 @@ model Proyecto {
   pa          Boolean @default(true)
   imagenUrl        String?
   duracionEstimada Int @default(0)
-
+  capacidadMaxima  Int     @default(1)
+  
   // Relación: Un Proyecto pertenece a UN Usuario (Admin)
   adminEncargado   Usuario @relation(fields: [adminEncargadoId], references: [id])
   adminEncargadoId String // Esta es la "foreign key" (llave foránea)

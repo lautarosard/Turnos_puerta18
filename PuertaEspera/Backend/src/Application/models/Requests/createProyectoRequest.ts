@@ -5,4 +5,5 @@ export interface CreateProjectRequest {
     pa: boolean;
     duracionEstimada?: number;
     imagenUrl?: string;
+    capacidadMaxima?: number ;
 }
