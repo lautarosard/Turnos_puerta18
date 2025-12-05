@@ -66,4 +66,15 @@ export class PrismaTurnosRepository implements ITurnoRepository {
             include: { visitante: true } // Importante para el mapeo
         });
     }
+
+    async existeTurnoActivo(visitanteId: string, proyectoId: string): Promise<boolean> {
+    const count = await prisma.turno.count({
+        where: {
+            visitanteId: visitanteId,
+            proyectoId: proyectoId,
+            estado: { in: ['PENDIENTE', 'LLAMADO'] } 
+        }
+    });
+    return count > 0;
+}
 }

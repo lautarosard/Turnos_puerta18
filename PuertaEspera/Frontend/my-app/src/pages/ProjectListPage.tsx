@@ -31,16 +31,24 @@ export function ProjectListPage() {
     }, []);
 
     const handleSelectProject = (id: string) => {
-        // 1. Validar límite
-        if (turnosActivos.length >= 3) {
-            setShowLimitModal(true);
+        // 1. Primero buscamos el proyecto para saber de qué tipo es
+        const proyecto = proyectos.find(p => p.id === id);
+        
+        if (!proyecto) return; // Por seguridad
+
+        // 2. Definimos si es informativo (igual que en el Modal)
+        // Si dura 0 o menos, o es nulo, es informativo
+        const esInformativo = !proyecto.duracionEstimada || proyecto.duracionEstimada <= 0;
+
+        // 3. VALIDACIÓN INTELIGENTE:
+        // Solo bloqueamos SI NO es informativo Y SI ya tiene 3 turnos
+        if (!esInformativo && turnosActivos.length >= 3) {
+            setShowLimitModal(true); // "Alcanzaste el máximo"
             return;
         }
-        // 2. Buscar proyecto y abrir modal
-        const proyecto = proyectos.find(p => p.id === id);
-        if (proyecto) {
-            setSelectedProject(proyecto); // Ahora sí existe esta función
-        }
+
+        // 4. Si pasó la validación (o es informativo), abrimos el modal
+        setSelectedProject(proyecto);
     };
 
     const handleCloseProjectModal = () => {

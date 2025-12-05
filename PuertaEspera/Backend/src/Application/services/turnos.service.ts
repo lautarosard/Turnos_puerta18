@@ -18,7 +18,11 @@ export class TurnoService implements ITurnoService {
         //validación de turnos
         const validarTurno = await this.turnoRepository.countTurnosActivos(request.visitanteId);
         if(validarTurno >= 3) {
-            throw new ConflictError('Limite alcanzado: Ya tienes 2 turnos en espera');
+            throw new ConflictError('Limite alcanzado: Ya tienes 3 turnos en espera');
+        }
+        const yaTieneTurno = await this.turnoRepository.existeTurnoActivo(request.visitanteId, request.proyectoId);
+        if (yaTieneTurno) {
+            throw new Error('Ya tienes un turno activo para este stand.');
         }
         
         const nuevoTurno = await this.turnoRepository.create(

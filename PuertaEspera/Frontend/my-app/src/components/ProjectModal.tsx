@@ -16,15 +16,16 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
     const [step, setStep] = useState<'info' | 'success'>('info'); // Pasos: Información -> Éxito
 
     const [loading, setLoading] = useState(false);
+    const { refrescarTurnos, turnosActivos } = useTurnos();
 
     if (!isOpen) return null;
 
+    const yaEstoyEnFila = turnosActivos.some(t => t.proyectoId === proyecto.id);
     // Lógica: Si duración es 0, es "Informativo" (Robot). Si es > 0, es "Con Fila".
     const esInformativo = proyecto.duracionEstimada === 0;
 
     // Acción: Sacar Turno
     // 1. Traemos la función refrescar
-    const { refrescarTurnos } = useTurnos();
 
     const handleUnirseFila = async () => {
         setLoading(true);
@@ -89,15 +90,20 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
                     Te esperamos
                 </button>
                 ) : (
+                    yaEstoyEnFila ? (
+                    <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed rounded-xl border-2 border-gray-200">
+                    Ya estás en la fila
+                    </Button>
+                ) : (
                 // CASO B: FILA (Fucsia)
                 <Button 
                     onClick={handleUnirseFila} 
                     disabled={loading}
-                    className="bg-[#EF0886] hover:bg-[#d00775] w-full rounded-xl"
+                    className="bg-[#EF0886] w-full rounded-xl"
                 >
                     {loading ? 'Procesando...' : 'Iniciar fila'}
                 </Button>
-                )}
+                ))}
             </div>
             )}
 
