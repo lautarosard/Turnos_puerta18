@@ -3,7 +3,7 @@ import { useTurnos } from "../context/TurnoContext";
 import type { Proyecto } from "../types";
 import { Button } from "./ui/button";
 import { cancelarTurno } from "../services/turnoService";
-
+import { TicketTimer } from "./TicketTimer";
 interface Props {
     proyectos: Proyecto[]; // Recibimos los proyectos para buscar los nombres
 }
@@ -81,7 +81,7 @@ export function ActiveTicketsList({ proyectos }: Props) {
                 
                 <div className="flex justify-between items-end">
                     <span className="text-xs opacity-90 leading-tight">Acercate al stand <br/>aprox. en:</span>
-                    <span className="text-2xl font-bold">{turno.tiempoDeEspera || 15} min</span>
+                    <TicketTimer initialMinutes={turno.tiempoDeEspera || 15} />    
                 </div>
                 </div>
             );
