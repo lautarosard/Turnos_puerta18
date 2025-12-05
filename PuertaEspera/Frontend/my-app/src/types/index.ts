@@ -8,6 +8,7 @@ export interface Proyecto {
     descripcion?: string; // Opcional en DB, pero el front suele recibir string vacío si es null
     ubicacion?: string;
     duracionEstimada?: number;
+    capacidadMaxima?: number;
     imagenUrl?: string | null; // Puede venir null si no tiene ícono
     pa?: boolean;
     // Agregamos esto opcional
