@@ -81,7 +81,7 @@ export function ActiveTicketsList({ proyectos }: Props) {
                 
                 <div className="flex justify-between items-end">
                     <span className="text-xs opacity-90 leading-tight">Acercate al stand <br/>aprox. en:</span>
-                    <TicketTimer initialMinutes={turno.tiempoDeEspera || 15} />    
+                    <TicketTimer initialMinutes={turno.tiempoDeEspera || 5} />    
                 </div>
                 </div>
             );
