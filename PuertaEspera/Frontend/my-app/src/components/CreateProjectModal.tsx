@@ -24,7 +24,12 @@ const ICONS = [
     { name: 'editar.svg', label: 'Editar' },
     { name: 'camara.svg', label: 'Camara' },
     { name: 'estrella.svg', label: 'Estrella' },
-    { name: 'peli.svg', label: 'Peli' }
+    { name: 'peli.svg', label: 'Peli' },
+    { name: 'proximo_trabajoN1.svg', label: 'TrabajoN1' },
+    { name: 'proximo_trabajoN2.svg', label: 'TrabajoN2' },
+    { name: 'proximo_trabajoN3.svg', label: 'TrabajoN3' },
+    { name: 'proximo_trabajoN4.svg', label: 'TrabajoN4' },
+    { name: 'pulso_robotico.svg', label: 'Pulso robotico' }
 ];
 
 export function CreateProjectModal({ isOpen, onClose, onSuccess, projectToEdit }: Props) {
@@ -53,13 +58,13 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, projectToEdit }
                     pa: projectToEdit.pa || false
                 });
             } else {
-                setForm({ 
-                    nombre: '', 
-                    descripcion: '', 
-                    duracionEstimada: 5, 
+                setForm({
+                    nombre: '',
+                    descripcion: '',
+                    duracionEstimada: 5,
                     capacidadMaxima: 1, // <--- RESETEAMOS
-                    imagenUrl: 'robot.svg', 
-                    pa: false 
+                    imagenUrl: 'robot.svg',
+                    pa: false
                 });
             }
         }
@@ -106,7 +111,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, projectToEdit }
                 </h2>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    
+
                     <div>
                         <input
                             type="text" required placeholder="Nombre del stand"
@@ -115,7 +120,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, projectToEdit }
                             onChange={e => setForm({ ...form, nombre: e.target.value })}
                         />
                     </div>
-                    
+
                     <div>
                         <textarea
                             rows={3} placeholder="Info del stand"
@@ -130,7 +135,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, projectToEdit }
                         <div className="flex-1">
                             <label className="text-xs text-white/70 ml-2 mb-1 block">Duración (min)</label>
                             <input
-                                type="number" min="0" required 
+                                type="number" min="0" required
                                 className="w-full p-4 rounded-xl text-gray-700 bg-white outline-none focus:ring-4 focus:ring-brand-purple/50 font-medium text-center"
                                 value={form.duracionEstimada}
                                 onChange={e => setForm({ ...form, duracionEstimada: Number(e.target.value) })}
@@ -139,7 +144,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, projectToEdit }
                         <div className="flex-1">
                             <label className="text-xs text-white/70 ml-2 mb-1 block">Cupo Máx.</label>
                             <input
-                                type="number" min="1" required 
+                                type="number" min="1" required
                                 className="w-full p-4 rounded-xl text-gray-700 bg-white outline-none focus:ring-4 focus:ring-brand-purple/50 font-medium text-center"
                                 value={form.capacidadMaxima}
                                 onChange={e => setForm({ ...form, capacidadMaxima: Number(e.target.value) })}
