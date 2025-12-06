@@ -15,25 +15,37 @@ export function ProjectListPage() {
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
-    const { turnosActivos } = useTurnos(); 
-    
+    const { turnosActivos } = useTurnos();
+
     // --- ESTADO QUE FALTABA (Para abrir el modal del proyecto) ---
     const [selectedProject, setSelectedProject] = useState<Proyecto | null>(null);
-    
+
     // Estado para el modal de error (Límite alcanzado)
-    const [showLimitModal, setShowLimitModal] = useState(false); 
+    const [showLimitModal, setShowLimitModal] = useState(false);
 
     useEffect(() => {
         getProyectos()
-        .then(data => setProyectos(data))
-        .catch(err => console.error(err))
-        .finally(() => setLoading(false));
+            .then(data => {
+                // ORDENAMIENTO AQUÍ:
+                // Si A es informativo (duración 0) y B no, A va primero (-1).
+                const ordenados = data.sort((a, b) => {
+                    const aInfo = !a.duracionEstimada || a.duracionEstimada <= 0;
+                    const bInfo = !b.duracionEstimada || b.duracionEstimada <= 0;
+
+                    if (aInfo && !bInfo) return -1; // A primero
+                    if (!aInfo && bInfo) return 1;  // B primero
+                    return 0; // Iguales
+                });
+                setProyectos(ordenados);
+            })
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false));
     }, []);
 
     const handleSelectProject = (id: string) => {
         // 1. Primero buscamos el proyecto para saber de qué tipo es
         const proyecto = proyectos.find(p => p.id === id);
-        
+
         if (!proyecto) return; // Por seguridad
 
         // 2. Definimos si es informativo (igual que en el Modal)
@@ -54,77 +66,77 @@ export function ProjectListPage() {
     const handleCloseProjectModal = () => {
         setSelectedProject(null);
     };
-//text-white text-4xl md:text-5xl font-bold font-dolce mb-6 uppercase tracking-wide
+    //text-white text-4xl md:text-5xl font-bold font-dolce mb-6 uppercase tracking-wide
     return (
         <div className="min-h-screen bg-brand-background px-6 py-10 flex flex-col items-center">
-        
-        {/* 1. Lista de Tickets Activos (Arriba a la derecha) */}
-        <ActiveTicketsList proyectos={proyectos}/>
 
-        {/* Logo */}
-        <img src={logo} alt="Puerta 18" className="w-1/2 max-w-[200px] md:max-w-[300px] h-auto mx-auto mb-8 object-contain" />
+            {/* 1. Lista de Tickets Activos (Arriba a la derecha) */}
+            <ActiveTicketsList proyectos={proyectos} />
 
-        {/* Saludo y Textos */}
-        <div className="text-center mb-12 w-full max-w-2xl">
-            <h1 className="font-dolce font-bold text-[36px] leading-none tracking-normal text-white">
-            BIENVENIDX {user?.nombre || "INVITADO"}!
-            </h1>
-            
-            <p className="mt-2 text-white font-dm-sans text-[15px] md:text-2xl leading-snug">
-            Tenés un límite de{' '}
-            <span className="text-brand-cyan italic">3 filas simultáneas</span>.
-            <br />
-            Al terminar una, podes unirte a otra.
-            </p>
-        </div>
+            {/* Logo */}
+            <img src={logo} alt="Puerta 18" className="w-1/2 max-w-[200px] md:max-w-[300px] h-auto mx-auto mb-8 object-contain" />
 
-        {/* Grilla de Proyectos */}
-        {loading ? (
-            <div className="text-white animate-pulse">Cargando experiencias...</div>
-        ) : (
-            <div className="w-full max-w-4xl grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {proyectos.map((proy) => (
-                <ProjectCard 
-                key={proy.id} 
-                proyecto={proy} 
-                onClick={handleSelectProject}
-                />
-            ))}
+            {/* Saludo y Textos */}
+            <div className="text-center mb-12 w-full max-w-2xl">
+                <h1 className="font-dolce font-bold text-[36px] leading-none tracking-normal text-white">
+                    BIENVENIDX {user?.nombre || "INVITADO"}!
+                </h1>
+
+                <p className="mt-2 text-white font-dm-sans text-[15px] md:text-2xl leading-snug">
+                    Tenés un límite de{' '}
+                    <span className="text-brand-cyan italic">3 filas simultáneas</span>.
+                    <br />
+                    Al terminar una, podes unirte a otra.
+                </p>
             </div>
-        )}
 
-        {/* --- MODALES --- */}
-
-        {/* A. Modal de Detalle de Proyecto (Para iniciar fila) */}
-        {selectedProject && (
-            <ProjectModal 
-                isOpen={!!selectedProject}
-                proyecto={selectedProject}
-                onClose={handleCloseProjectModal}
-            />
-        )}
-
-        {/* B. Modal de Error (Límite Alcanzado) */}
-        {showLimitModal && (
-            <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
-                <div className="bg-white rounded-[21px] p-8 text-center max-w-sm shadow-2xl animate-in zoom-in duration-200">
-                    <h2 className="text-2xl font-bold text-brand-background mb-4 font-dm-sans">
-                        Alcanzaste el máximo de turnos permitidos
-                    </h2>
-                    <p className="text-brand-card italic font-medium mb-8 font-dm-sans">
-                        Sólo podés tener 3 turnos activos.
-                    </p>
-                    
-                    {/* Botón Volver (Ahora sí importado) */}
-                    <Button 
-                        onClick={() => setShowLimitModal(false)} 
-                        className="bg-brand-card hover:bg-pink-600 w-full rounded-xl"
-                    >
-                        Volver
-                    </Button>
+            {/* Grilla de Proyectos */}
+            {loading ? (
+                <div className="text-white animate-pulse">Cargando experiencias...</div>
+            ) : (
+                <div className="w-full max-w-4xl grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+                    {proyectos.map((proy) => (
+                        <ProjectCard
+                            key={proy.id}
+                            proyecto={proy}
+                            onClick={handleSelectProject}
+                        />
+                    ))}
                 </div>
-            </div>
-        )}
+            )}
+
+            {/* --- MODALES --- */}
+
+            {/* A. Modal de Detalle de Proyecto (Para iniciar fila) */}
+            {selectedProject && (
+                <ProjectModal
+                    isOpen={!!selectedProject}
+                    proyecto={selectedProject}
+                    onClose={handleCloseProjectModal}
+                />
+            )}
+
+            {/* B. Modal de Error (Límite Alcanzado) */}
+            {showLimitModal && (
+                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-6 backdrop-blur-sm">
+                    <div className="bg-white rounded-[21px] p-8 text-center max-w-sm shadow-2xl animate-in zoom-in duration-200">
+                        <h2 className="text-2xl font-bold text-brand-background mb-4 font-dm-sans">
+                            Alcanzaste el máximo de turnos permitidos
+                        </h2>
+                        <p className="text-brand-card italic font-medium mb-8 font-dm-sans">
+                            Sólo podés tener 3 turnos activos.
+                        </p>
+
+                        {/* Botón Volver (Ahora sí importado) */}
+                        <Button
+                            onClick={() => setShowLimitModal(false)}
+                            className="bg-brand-card hover:bg-pink-600 w-full rounded-xl"
+                        >
+                            Volver
+                        </Button>
+                    </div>
+                </div>
+            )}
 
         </div>
     );
