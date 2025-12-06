@@ -1,7 +1,7 @@
 // src/Application/services/TurnoService.ts
 import { Server } from 'socket.io';
 import { ITurnoService } from '../interfaces/IService/ITurnoService.js';
-import { ITurnoRepository } from '../../Domain/repositories/ITurnosRepository.js'; 
+import { ITurnoRepository } from '../../Domain/repositories/ITurnosRepository.js';
 import { TurnoResponse } from '../models/Responses/turnoResponse.js';
 import { Turno, EstadoTurno } from '../../Infrastructure/database/client.js';
 import { TurnoRequest } from '../models/Requests/TurnoRequest.js';
@@ -9,19 +9,19 @@ import { IProyectoRepository } from '../../Domain/repositories/IProyectoReposito
 import { ConflictError } from '../exceptions/AppError.js';
 export class TurnoService implements ITurnoService {
     constructor(
-        private turnoRepository: ITurnoRepository, 
+        private turnoRepository: ITurnoRepository,
         private io: Server,
         private proyectoRepository: IProyectoRepository
-        ) {} 
-    
+    ) { }
+
     async solicitarTurno(request: TurnoRequest): Promise<TurnoResponse> {
         // 1. Validaciones de usuario (Límite de 3 turnos)
         const validarTurno = await this.turnoRepository.countTurnosActivos(request.visitanteId);
-        if(validarTurno >= 3) {
+        if (validarTurno >= 3) {
             // Asegúrate de tener ConflictError importado o usa Error
-            throw new Error('Límite alcanzado: Ya tienes 3 turnos en espera'); 
+            throw new Error('Límite alcanzado: Ya tienes 3 turnos en espera');
         }
-        
+
         const yaTieneTurno = await this.turnoRepository.existeTurnoActivo(request.visitanteId, request.proyectoId);
         if (yaTieneTurno) {
             throw new Error('Ya tienes un turno activo para este stand.');
@@ -30,7 +30,7 @@ export class TurnoService implements ITurnoService {
         // 2. Validaciones de Proyecto y Cupo
         // Usamos esta variable 'proyectoVerificado' para todo, no la busques de nuevo abajo
         const proyectoVerificado = await this.proyectoRepository.getById(request.proyectoId);
-        
+
         if (!proyectoVerificado) {
             throw new Error('El proyecto no existe.');
         }
@@ -58,17 +58,17 @@ export class TurnoService implements ITurnoService {
         } else {
             // CASO FILA INDIA: Calculamos cuántos hay antes * duración
             const turnosAntes = await this.turnoRepository.countTurnosPendientesPrevios(
-                request.proyectoId, 
+                request.proyectoId,
                 nuevoTurno.numero
             );
-            tiempoEstimado = turnosAntes * (proyectoVerificado.duracionEstimada || 15);
+            tiempoEstimado = turnosAntes * (proyectoVerificado.duracionEstimada ?? 10);
         }
 
         // 5. Mapear y responder
         const response = this.mapToResponse(nuevoTurno, tiempoEstimado);
-        
+
         this.io.to(request.proyectoId).emit('nuevo-turno', response);
-        
+
         return response;
     }
 
@@ -86,34 +86,34 @@ export class TurnoService implements ITurnoService {
 
     async getMisTurnos(visitanteId: string): Promise<TurnoResponse[]> {
         const turnos = await this.turnoRepository.findActiveByVisitanteId(visitanteId);
-        
+
         // Calculamos el tiempo de espera para cada turno de la lista
         const turnosConTiempo = await Promise.all(turnos.map(async (turno) => {
             const proyecto = await this.proyectoRepository.getById(turno.proyectoId);
-            
+
             const turnosAntes = await this.turnoRepository.countTurnosPendientesPrevios(
-                turno.proyectoId, 
+                turno.proyectoId,
                 turno.numero
             );
-            
-            const tiempo = turnosAntes * (proyecto?.duracionEstimada || 15);
-            
+
+            const tiempo = turnosAntes * (proyecto?.duracionEstimada ?? 10);
+
             return this.mapToResponse(turno, tiempo);
         }));
 
         return turnosConTiempo;
     }
     private mapToResponse(turno: Turno & { visitante?: { nombre: string } | null }, tiempoEstimado?: number): TurnoResponse {
-    
-    return {
-        id: turno.id,
-        numero: turno.numero,
-        estado: turno.estado,
-        fecha: turno.creadoEn,
-        proyectoId: turno.proyectoId,
-        tiempoDeEspera: tiempoEstimado,
-        // Ahora TypeScript ya no se queja porque le avisamos arriba que 'visitante' existe
-        visitanteNombre: turno.visitante?.nombre || 'Anónimo' 
+
+        return {
+            id: turno.id,
+            numero: turno.numero,
+            estado: turno.estado,
+            fecha: turno.creadoEn,
+            proyectoId: turno.proyectoId,
+            tiempoDeEspera: tiempoEstimado,
+            // Ahora TypeScript ya no se queja porque le avisamos arriba que 'visitante' existe
+            visitanteNombre: turno.visitante?.nombre || 'Anónimo'
         };
     }
 }
