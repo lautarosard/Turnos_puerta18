@@ -103,6 +103,22 @@ export class TurnoService implements ITurnoService {
 
         return turnosConTiempo;
     }
+    async gestionarTaller(proyectoId: string, accion: 'LLAMAR_TODOS' | 'FINALIZAR_TODOS'): Promise<void> {
+
+        if (accion === 'LLAMAR_TODOS') {
+            // Pasamos todos los PENDIENTES a LLAMADOS
+            await this.turnoRepository.updateManyStatus(proyectoId, 'PENDIENTE', 'LLAMADO');
+        }
+        else if (accion === 'FINALIZAR_TODOS') {
+            // Pasamos todos los LLAMADOS a FINALIZADOS
+            await this.turnoRepository.updateManyStatus(proyectoId, 'LLAMADO', 'FINALIZADO');
+        }
+
+        // Emitimos un evento especial de "REFRESCAR TODO" para no mandar 35 notificaciones
+        this.io.to(proyectoId).emit('batch-update');
+    }
+
+
     private mapToResponse(turno: Turno & { visitante?: { nombre: string } | null }, tiempoEstimado?: number): TurnoResponse {
 
         return {
