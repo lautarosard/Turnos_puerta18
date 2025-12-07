@@ -17,5 +17,8 @@ export const createTurnoRoutes = (controller: TurnoController) => {
   // 3. ADMIN: Cambiar Estado (Llamar/Finalizar)
   router.patch('/:id/estado', authMiddleware, asyncHandler(controller.changeStatus));
 
+  // 4. ADMIN: Acciones masivas
+  router.post('/:proyectoId/taller', authMiddleware, asyncHandler(controller.tallerActions));
+
   return router;
 };

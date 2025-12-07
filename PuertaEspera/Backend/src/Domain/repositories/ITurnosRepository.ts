@@ -1,16 +1,17 @@
 import { Turno, EstadoTurno } from "./../../Infrastructure/database/client.js";
 
-export interface ITurnoRepository{
+export interface ITurnoRepository {
 
-    create(data: {visitanteId: string; proyectoId: string}):Promise<Turno>;
+    create(data: { visitanteId: string; proyectoId: string }): Promise<Turno>;
 
-    getByProyectoId(proyectoId:string): Promise<Turno[]>;
+    getByProyectoId(proyectoId: string): Promise<Turno[]>;
 
     findActiveByVisitanteId(visitanteId: string): Promise<Turno[]>;
-    countTurnosActivos(visitanteId:String): Promise<number>;
+    countTurnosActivos(visitanteId: String): Promise<number>;
 
-    updateEstado(id:string, estado: EstadoTurno):Promise<Turno>;
+    updateEstado(id: string, estado: EstadoTurno): Promise<Turno>;
     countActiveByProject(proyectoId: string): Promise<number>;
     countTurnosPendientesPrevios(proyectoId: string, numeroTurno: number): Promise<number>;
     existeTurnoActivo(visitanteId: string, proyectoId: string): Promise<boolean>;
+    updateManyStatus(proyectoId: string, oldStatus: EstadoTurno, newStatus: EstadoTurno): Promise<void>
 }

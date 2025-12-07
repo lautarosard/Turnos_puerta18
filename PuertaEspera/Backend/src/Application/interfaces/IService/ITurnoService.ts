@@ -12,4 +12,5 @@ export interface ITurnoService {
     getMisTurnos(visitanteId: string): Promise<TurnoResponse[]>
     // Admin cambia estado
     cambiarEstado(id: string, estado: EstadoTurno, proyectoId: string): Promise<TurnoResponse>;
+    gestionarTaller(proyectoId: string, accion: 'LLAMAR_TODOS' | 'FINALIZAR_TODOS'): Promise<void>
 }

@@ -34,9 +34,13 @@ export const getTurnosDeProyecto = async (proyectoId: string): Promise<Turno[]> 
 export const cambiarEstadoTurno = async (id: string, proyectoId: string, estado: EstadoTurno): Promise<Turno> => {
     const { data } = await api.patch<Turno>(`/turnos/${id}/estado`, {
         estado,
-        proyectoId 
+        proyectoId
     });
     return data;
+};
+
+export const accionTaller = async (proyectoId: string, accion: 'LLAMAR_TODOS' | 'FINALIZAR_TODOS') => {
+    await api.post(`/turnos/${proyectoId}/taller`, { accion });
 };
 
 // Wrappers útiles (opcionales, pero hacen el código más legible)

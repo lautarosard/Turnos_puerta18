@@ -93,4 +93,18 @@ export class TurnoController {
 
     res.status(200).json(misTurnos);
   }
+
+  tallerActions = async (req: Request, res: Response) => {
+    const { proyectoId } = req.params;
+    const { accion } = req.body;
+
+    if (accion !== 'LLAMAR_TODOS' && accion !== 'FINALIZAR_TODOS') {
+      return res.status(400).json({ message: 'Acción inválida' });
+    }
+
+    await this.turnoService.gestionarTaller(proyectoId, accion);
+    res.status(200).json({ message: 'Acción masiva ejecutada' });
+  }
+
 }
+
