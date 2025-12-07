@@ -72,18 +72,30 @@ export class PrismaTurnosRepository implements ITurnoRepository {
             where: {
                 visitanteId: visitanteId,
                 proyectoId: proyectoId,
-                estado: { in: ['PENDIENTE', 'LLAMADO'] } 
+                estado: { in: ['PENDIENTE', 'LLAMADO'] }
             }
         });
         return count > 0;
     }
-    
+
     async countActiveByProject(proyectoId: string): Promise<number> {
         return await prisma.turno.count({
             where: {
                 proyectoId: proyectoId,
                 // Consideramos "gente en el stand" a los que están PENDIENTES o siendo LLAMADOS
                 estado: { in: ['PENDIENTE', 'LLAMADO'] }
+            }
+        });
+    }
+
+    async updateManyStatus(proyectoId: string, oldStatus: EstadoTurno, newStatus: EstadoTurno): Promise<void> {
+        await prisma.turno.updateMany({
+            where: {
+                proyectoId: proyectoId,
+                estado: oldStatus
+            },
+            data: {
+                estado: newStatus
             }
         });
     }
