@@ -28,7 +28,19 @@ export function SuperAdminDashboard() {
     const loadProyectos = () => {
         setLoading(true);
         getProyectos()
-            .then(data => setProyectos(data))
+            .then(data => {
+                // ORDENAMIENTO AQUÍ:
+                // Si A es informativo (duración 0) y B no, B va primero (-1).
+                const ordenados = data.sort((a, b) => {
+                    const aInfo = !a.duracionEstimada || a.duracionEstimada <= 0;
+                    const bInfo = !b.duracionEstimada || b.duracionEstimada <= 0;
+
+                    if (aInfo && !bInfo) return 1; // B primero
+                    if (!aInfo && bInfo) return -1;  // A primero
+                    return 0; // Iguales
+                });
+                setProyectos(ordenados);
+            })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
     };
