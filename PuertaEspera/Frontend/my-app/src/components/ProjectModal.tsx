@@ -197,7 +197,7 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
 
                         <Button
                             onClick={handleClose}
-                            className="bg-[#EF0886] hover:bg-[#d00775] w-full rounded-xl shadow-lg"
+                            className="bg-[#EF0886] w-full rounded-xl shadow-lg"
                         >
                             Volver al Inicio
                         </Button>
