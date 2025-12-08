@@ -132,7 +132,7 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
                             </button>
                         ) : (
                             yaEstoyEnFila ? (
-                                <Button disabled className="w-full bg-gray-300 text-black-500 cursor-not-allowed rounded-xl border-2 border-gray-200">
+                                <Button disabled className="w-full bg-gray-300 text-[#000000] cursor-not-allowed rounded-xl border-2 border-gray-200">
                                     Ya estás en la fila
                                 </Button>
                             ) : (
