@@ -5,6 +5,7 @@ import { getProyectos, eliminarProyecto, updateProyecto } from '../services/proy
 import { getTurnosDeProyecto, llamarTurno, finalizarTurno, cancelarTurno, accionTaller } from '../services/turnoService';
 import type { Proyecto, Turno } from '../types';
 import logo from '../assets/logoPuerta.svg';
+import QRCode from "react-qr-code";
 import flameLogo from '../assets/flame-icon.svg';
 import { CreateProjectModal } from '../components/CreateProjectModal';
 import { AddManualVisitorModal } from '../components/AddManualVisitorModal';
@@ -26,6 +27,8 @@ export function StandAdminPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isManualAddOpen, setIsManualAddOpen] = useState(false);
+
+    const [showQRModal, setShowQRModal] = useState(false);
 
     useEffect(() => {
         const userStr = localStorage.getItem('user_admin');
@@ -111,6 +114,40 @@ export function StandAdminPage() {
         }
     };
 
+
+    const handleDescargarQR = () => {
+        const svg = document.getElementById("StandQR");
+        if (!svg) return;
+
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+
+        // Convertimos SVG a base64
+        img.src = "data:image/svg+xml;base64," + btoa(svgData);
+
+        img.onload = () => {
+            // Damos margen blanco extra para que sea fácil de imprimir
+            canvas.width = img.width + 60;
+            canvas.height = img.height + 60;
+
+            if (ctx) {
+                // Fondo blanco
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Dibujar QR
+                ctx.drawImage(img, 30, 30);
+
+                // Descargar
+                const pngFile = canvas.toDataURL("image/png");
+                const downloadLink = document.createElement("a");
+                downloadLink.download = `QR_${proyecto?.nombre || 'Stand'}.png`;
+                downloadLink.href = pngFile;
+                downloadLink.click();
+            }
+        };
+    };
     // --- VARIABLES DE TALLER ---
     const turnoActual = turnos.find(t => t.estado === 'LLAMADO');
     const filaEspera = turnos.filter(t => t.estado === 'PENDIENTE').sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
@@ -176,9 +213,18 @@ export function StandAdminPage() {
                         <button onClick={handleDeleteProject} className="bg-red-500/20 hover:bg-red-500/40 text-red-200 text-xs font-bold px-3 py-1 rounded-full border border-red-500/30">
                             🗑️ Eliminar
                         </button>
+
                     </div>
                 )}
 
+                {(userRole === 'SUPER_ADMIN' || proyecto?.adminEncargado?.id === currentUserId) && (
+                    <button
+                        onClick={() => setShowQRModal(true)}
+                        className="bg-blue-500/30 hover:bg-blue-500/50 text-blue-100 text-xs font-bold px-3 py-1 rounded-full border border-blue-400/30 flex items-center gap-1"
+                    >
+                        📱 Ver QR
+                    </button>
+                )}
                 {/* --- SECCIÓN NUEVA: QR DEL STAND --- */}
                 {/* Puedes poner esto donde quieras, por ejemplo debajo del título o en un botón modal */}
 
@@ -362,6 +408,42 @@ export function StandAdminPage() {
                     onClose={() => setIsManualAddOpen(false)}
                     proyectoId={id}
                 />
+            )}
+            {showQRModal && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-xs flex flex-col items-center shadow-2xl relative animate-in zoom-in duration-300">
+                        {/* Botón cerrar */}
+                        <button
+                            onClick={() => setShowQRModal(false)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center"
+                        >
+                            ✕
+                        </button>
+
+                        <h3 className="text-lg font-bold text-gray-800 mb-2 uppercase tracking-wide">Código QR</h3>
+                        <p className="text-xs text-gray-500 mb-6 text-center px-4">
+                            Imprimí esto y pegalo en el stand para que la gente se anote sola.
+                        </p>
+
+                        {/* El QR Generado por código (NO IMAGEN) */}
+                        <div className="p-4 border-2 border-dashed border-gray-200 rounded-xl mb-6 bg-white">
+                            <QRCode
+                                id="StandQR" // ID IMPORTANTE PARA LA DESCARGA
+                                value={qrTargetUrl}
+                                size={200}
+                                level="H" // High Error Correction
+                            />
+                        </div>
+
+                        {/* Botón de descarga */}
+                        <button
+                            onClick={handleDescargarQR}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
+                        >
+                            <span>📥</span> Descargar PNG
+                        </button>
+                    </div>
+                </div>
             )}
         </div>
     );
