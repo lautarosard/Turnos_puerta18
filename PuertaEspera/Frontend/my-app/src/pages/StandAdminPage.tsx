@@ -178,9 +178,6 @@ export function StandAdminPage() {
     // window.location.origin da "https://tu-app.vercel.app"
     const qrTargetUrl = `${window.location.origin}/proyectos?stand=${id}`;
 
-    // Usamos una API gratuita para generar la imagen (rápido y sin instalar nada)
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrTargetUrl)}`;
-
     return (
         <div className={`min-h-screen ${bgClass} px-6 py-8 flex flex-col items-center relative overflow-x-hidden transition-colors duration-500`}>
 
