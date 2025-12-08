@@ -37,7 +37,7 @@ export function VisitorLoginPage() {
       login(data.token, data.visitante);
 
       // 4. Feedback visual
-      alert(`¡Bienvenido ${data.visitante.nombre}! Token guardado.`);
+      //alert(`¡Bienvenido ${data.visitante.nombre}! Token guardado.`);
 
       navigate('/proyectos');
 

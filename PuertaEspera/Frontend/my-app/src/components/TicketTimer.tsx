@@ -32,7 +32,7 @@ export function TicketTimer({ initialMinutes }: Props) {
   // 3. Renderizado condicional
   // Si es 0, mostramos un mensaje más amigable que "0 min"
   if (minutes <= 0) {
-    return <span className="text-xl font-bold animate-pulse">¡En breve!</span>;
+    return <span className="text-xl font-bold animate-pulse">¡Ahora!</span>;
   }
 
   return (
