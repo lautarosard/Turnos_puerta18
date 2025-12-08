@@ -225,24 +225,7 @@ export function StandAdminPage() {
                         📱 Ver QR
                     </button>
                 )}
-                {/* --- SECCIÓN NUEVA: QR DEL STAND --- */}
-                {/* Puedes poner esto donde quieras, por ejemplo debajo del título o en un botón modal */}
 
-                {userRole === 'SUPER_ADMIN' || proyecto?.adminEncargado?.id === currentUserId ? (
-                    <div className="flex flex-col items-center justify-center my-6 p-4 bg-white rounded-3xl shadow-xl max-w-xs mx-auto">
-                        <p className="text-gray-500 text-xs font-bold uppercase mb-3 tracking-widest">
-                            QR de Inscripción Rápida
-                        </p>
-                        <img
-                            src={qrImageUrl}
-                            alt="QR Stand"
-                            className="w-48 h-48 rounded-lg border-2 border-gray-100"
-                        />
-                        <p className="text-center text-gray-400 text-[10px] mt-2 px-4 leading-tight">
-                            Los visitantes pueden escanear esto para abrir la fila de <strong>{proyecto?.nombre}</strong> directamente.
-                        </p>
-                    </div>
-                ) : null}
                 {/* --- INDICADOR DE CUPOS TALLER --- */}
                 {esTaller && (
                     <div className="mt-6 bg-black/20 backdrop-blur-md rounded-xl p-3 border border-white/10 inline-block animate-in zoom-in">

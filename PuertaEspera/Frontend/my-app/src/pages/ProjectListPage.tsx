@@ -39,25 +39,51 @@ export function ProjectListPage() {
                     return 0; // Iguales
                 });
                 setProyectos(ordenados);
-
-                const standIdFromUrl = searchParams.get('stand');
-                if (standIdFromUrl) {
-                    // Buscamos si existe el proyecto
-                    const proyectoTarget = ordenados.find(p => p.id === standIdFromUrl);
-
-                    // Si existe, reusamos tu función handleSelectProject
-                    // Esto es genial porque YA tiene la validación de "Máximo 3 turnos" incorporada
-                    if (proyectoTarget) {
-                        // Pequeño timeout para asegurar que el DOM y el estado estén listos
-                        setTimeout(() => {
-                            handleSelectProject(proyectoTarget.id);
-                        }, 100);
-                    }
-                }
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
     }, []);
+    // 1. EFECTO DE CARGA DE DATOS (Solo carga proyectos)
+    useEffect(() => {
+        getProyectos()
+            .then(data => {
+                const ordenados = data.sort((a, b) => {
+                    const aInfo = !a.duracionEstimada || a.duracionEstimada <= 0;
+                    const bInfo = !b.duracionEstimada || b.duracionEstimada <= 0;
+
+                    if (aInfo && !bInfo) return 1;
+                    if (!aInfo && bInfo) return -1;
+                    return 0;
+                });
+                setProyectos(ordenados);
+            })
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false));
+    }, []);
+
+    // 2. NUEVO EFECTO: DETECTAR URL Y ABRIR MODAL
+    // Este se ejecuta cada vez que cambia la lista de 'proyectos' o la URL.
+    // Garantiza que si los proyectos tardaron en cargar, igual se abra el modal al terminar.
+    useEffect(() => {
+        const standIdFromUrl = searchParams.get('stand');
+
+        // Solo intentamos abrir si:
+        // A. Hay un ID en la URL
+        // B. Ya se cargaron los proyectos (proyectos.length > 0)
+        // C. No hay un proyecto seleccionado actualmente
+        if (standIdFromUrl && proyectos.length > 0 && !selectedProject) {
+
+            const proyectoTarget = proyectos.find(p => p.id === standIdFromUrl);
+
+            if (proyectoTarget) {
+                console.log("Abriendo stand desde URL:", proyectoTarget.nombre);
+                handleSelectProject(proyectoTarget.id);
+
+                // Opcional: Limpiar la URL para que si recarga no se vuelva a abrir
+                // pero por ahora dejémoslo así para que sea simple.
+            }
+        }
+    }, [proyectos, searchParams]);
 
     const handleSelectProject = (id: string) => {
         // 1. Primero buscamos el proyecto para saber de qué tipo es
