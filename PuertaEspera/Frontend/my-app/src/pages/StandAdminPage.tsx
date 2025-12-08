@@ -137,6 +137,13 @@ export function StandAdminPage() {
 
     if (loading) return <div className="text-white text-center mt-20">Cargando...</div>;
 
+    // Generamos la URL a la que debe apuntar el QR
+    // window.location.origin da "https://tu-app.vercel.app"
+    const qrTargetUrl = `${window.location.origin}/proyectos?stand=${id}`;
+
+    // Usamos una API gratuita para generar la imagen (rápido y sin instalar nada)
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrTargetUrl)}`;
+
     return (
         <div className={`min-h-screen ${bgClass} px-6 py-8 flex flex-col items-center relative overflow-x-hidden transition-colors duration-500`}>
 
@@ -172,6 +179,24 @@ export function StandAdminPage() {
                     </div>
                 )}
 
+                {/* --- SECCIÓN NUEVA: QR DEL STAND --- */}
+                {/* Puedes poner esto donde quieras, por ejemplo debajo del título o en un botón modal */}
+
+                {userRole === 'SUPER_ADMIN' || proyecto?.adminEncargado?.id === currentUserId ? (
+                    <div className="flex flex-col items-center justify-center my-6 p-4 bg-white rounded-3xl shadow-xl max-w-xs mx-auto">
+                        <p className="text-gray-500 text-xs font-bold uppercase mb-3 tracking-widest">
+                            QR de Inscripción Rápida
+                        </p>
+                        <img
+                            src={qrImageUrl}
+                            alt="QR Stand"
+                            className="w-48 h-48 rounded-lg border-2 border-gray-100"
+                        />
+                        <p className="text-center text-gray-400 text-[10px] mt-2 px-4 leading-tight">
+                            Los visitantes pueden escanear esto para abrir la fila de <strong>{proyecto?.nombre}</strong> directamente.
+                        </p>
+                    </div>
+                ) : null}
                 {/* --- INDICADOR DE CUPOS TALLER --- */}
                 {esTaller && (
                     <div className="mt-6 bg-black/20 backdrop-blur-md rounded-xl p-3 border border-white/10 inline-block animate-in zoom-in">

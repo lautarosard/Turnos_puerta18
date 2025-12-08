@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 interface Props {
@@ -13,10 +13,13 @@ export const ProtectedRoute = ({ role, redirectPath }: Props) => {
   // 2. Verificación para ADMINS (Como ellos no usan el Context, leemos localStorage directo)
   const adminToken = localStorage.getItem('token_admin');
 
+  const location = useLocation();
+  const currentUrl = location.pathname + location.search;
+
   if (role === 'visitante') {
     if (!isAuthenticated) {
       // Si no es visitante autenticado, lo mandamos al registro (o a la landing)
-      return <Navigate to={redirectPath || "/login-visitante"} replace />;
+      return <Navigate to={`/login-visitante?redirect=${encodeURIComponent(currentUrl)}`} replace />;
     }
   }
 

@@ -5,6 +5,7 @@ import { useAuth } from './../context/AuthContext';
 import { ProjectCard } from './../components/ProjectCard';
 import logo from './../assets/logoPuerta.svg';
 import { useTurnos } from './../context/TurnoContext';
+import { useSearchParams } from 'react-router-dom';
 import { ActiveTicketsList } from './../components/ActiveTicketsList';
 
 import { Button } from './../components/ui/button';
@@ -13,6 +14,7 @@ import { ProjectModal } from './../components/ProjectModal';
 export function ProjectListPage() {
     const [proyectos, setProyectos] = useState<Proyecto[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchParams] = useSearchParams();
     const { user } = useAuth();
 
     const { turnosActivos } = useTurnos();
@@ -37,6 +39,21 @@ export function ProjectListPage() {
                     return 0; // Iguales
                 });
                 setProyectos(ordenados);
+
+                const standIdFromUrl = searchParams.get('stand');
+                if (standIdFromUrl) {
+                    // Buscamos si existe el proyecto
+                    const proyectoTarget = ordenados.find(p => p.id === standIdFromUrl);
+
+                    // Si existe, reusamos tu función handleSelectProject
+                    // Esto es genial porque YA tiene la validación de "Máximo 3 turnos" incorporada
+                    if (proyectoTarget) {
+                        // Pequeño timeout para asegurar que el DOM y el estado estén listos
+                        setTimeout(() => {
+                            handleSelectProject(proyectoTarget.id);
+                        }, 100);
+                    }
+                }
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));

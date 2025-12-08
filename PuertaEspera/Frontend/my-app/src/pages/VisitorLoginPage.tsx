@@ -6,18 +6,21 @@ import flameLogo from './../assets/flame-icon.svg';
 import { ingresarVisitante } from './../services/visitanteService';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 export function VisitorLoginPage() {
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/proyectos');
+      const destino = searchParams.get('redirect') || '/proyectos';
+      navigate(destino);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +42,8 @@ export function VisitorLoginPage() {
       // 4. Feedback visual
       //alert(`¡Bienvenido ${data.visitante.nombre}! Token guardado.`);
 
-      navigate('/proyectos');
+      const destino = searchParams.get('redirect') || '/proyectos';
+      navigate(destino);
 
     } catch (error: any) {
       console.error(error);
