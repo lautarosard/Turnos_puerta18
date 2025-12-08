@@ -211,17 +211,17 @@ export function StandAdminPage() {
                             🗑️ Eliminar
                         </button>
 
+                        {(userRole === 'SUPER_ADMIN' || proyecto?.adminEncargado?.id === currentUserId) && (
+                            <button
+                                onClick={() => setShowQRModal(true)}
+                                className="bg-blue-500/30 hover:bg-blue-500/50 text-blue-100 text-xs font-bold px-3 py-1 rounded-full border border-blue-400/30 flex items-center gap-1"
+                            >
+                                📱 Ver QR
+                            </button>
+                        )}
                     </div>
                 )}
 
-                {(userRole === 'SUPER_ADMIN' || proyecto?.adminEncargado?.id === currentUserId) && (
-                    <button
-                        onClick={() => setShowQRModal(true)}
-                        className="bg-blue-500/30 hover:bg-blue-500/50 text-blue-100 text-xs font-bold px-3 py-1 rounded-full border border-blue-400/30 flex items-center gap-1"
-                    >
-                        📱 Ver QR
-                    </button>
-                )}
 
                 {/* --- INDICADOR DE CUPOS TALLER --- */}
                 {esTaller && (
