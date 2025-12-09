@@ -150,7 +150,7 @@ export function ProjectListPage() {
 
             {/* Fueguito */}
             <div className="mt-16 md:mt-24 ">
-                <img src={flameLogo} alt="Puerta 18" className="w-24 md:w-48" />
+                <img src={flameLogo} alt="Puerta 18" className="w-10" />
             </div>
 
             {/* --- MODALES --- */}
