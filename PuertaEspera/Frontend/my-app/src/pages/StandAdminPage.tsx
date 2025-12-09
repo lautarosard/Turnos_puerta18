@@ -122,6 +122,9 @@ export function StandAdminPage() {
         // 1. Tomamos el SVG tal cual está (con los puntos blancos)
         const svgData = new XMLSerializer().serializeToString(svg);
 
+        const size = 2048;
+        const margin = 100; // Un buen margen para que no se corte
+
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         const img = new Image();
@@ -130,23 +133,25 @@ export function StandAdminPage() {
         img.src = "data:image/svg+xml;base64," + btoa(svgData);
 
         img.onload = () => {
-            // Le damos un poco de margen para que no se corten los bordes
-            const margin = 20;
-            canvas.width = img.width + (margin * 2);
-            canvas.height = img.height + (margin * 2);
+            canvas.width = size;
+            canvas.height = size;
 
             if (ctx) {
-                // 2. Limpiamos el canvas (transparente)
+                // 1. Limpiamos para asegurar transparencia
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 3. Dibujamos el QR
-                ctx.drawImage(img, margin, margin);
+                // 2. Desactivamos el suavizado de imágenes para que los bordes sean súper nítidos
+                ctx.imageSmoothingEnabled = false;
 
-                // 4. Generamos el PNG
+                // 3. Dibujamos el QR estirándolo para que ocupe todo el canvas gigante
+                // (Como es vector, no se pixela, se recalcula)
+                ctx.drawImage(img, margin, margin, size - (margin * 2), size - (margin * 2));
+
                 const pngFile = canvas.toDataURL("image/png");
-
                 const downloadLink = document.createElement("a");
-                downloadLink.download = `QR_Asset_Blanco_${proyecto?.nombre || 'Stand'}.png`;
+
+                // Le agrego "_HD" al nombre para que sepan que es el bueno
+                downloadLink.download = `QR_Asset_Blanco_HD_${proyecto?.nombre || 'Stand'}.png`;
                 downloadLink.href = pngFile;
                 downloadLink.click();
             }
@@ -434,9 +439,7 @@ export function StandAdminPage() {
                         >
                             <span>💎</span> Descargar PNG (Transparente)
                         </button>
-                        <p className="text-[10px] text-gray-500 mt-2 text-center">
-                            Listo para insertar en Illustrator/Photoshop
-                        </p>
+
                     </div>
                 </div>
             )}
