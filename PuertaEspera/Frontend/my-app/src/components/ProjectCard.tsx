@@ -20,7 +20,15 @@ export function ProjectCard({ proyecto, onClick }: ProjectCardProps) {
             className="flex flex-col items-center cursor-pointer group w-full"
         >
             {/* Caja de color */}
-            <div className={`${bgClass} w-full aspect-square rounded-[21px] flex items-center justify-center p-1 shadow-lg transition-transform group-hover:scale-105`}>
+            <div className={`${bgClass} w-full aspect-square rounded-[21px] flex items-center justify-center p-1 shadow-lg transition-transform group-hover:scale-105 relative overflow-hidden`}>
+                {proyecto.pa && (
+                    <img
+                        src="/assets/logoPa.png"
+                        alt="PA"
+                        className="absolute top-3 left-3 w-8 h-8 object-contain z-10 bg-white/90 rounded-full p-0.5 shadow-sm"
+                        title="Programa Adolescencia"
+                    />
+                )}
                 {/* Ícono */}
                 {proyecto.imagenUrl ? (
                     <img

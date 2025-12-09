@@ -110,6 +110,17 @@ export function ProjectModal({ proyecto, isOpen, onClose }: ProjectModalProps) {
                         ✕
                     </button>
                 )}
+                {/* --- NUEVO: Logo PA en el Modal (Posición Absoluta) --- */}
+                {/* Lo mostramos solo en el paso de Info para no ensuciar los mensajes de éxito/error */}
+                {step === 'info' && proyecto.pa && (
+                    <div className="absolute top-6 left-6 z-10 animate-in zoom-in duration-300">
+                        <img
+                            src="/assets/logoPa.png"
+                            alt="Programa Adolescencia"
+                            className="w-12 h-12 object-contain drop-shadow-md bg-white rounded-full"
+                        />
+                    </div>
+                )}
 
                 {/* ================================================== */}
                 {/* PASO 1: INFORMACIÓN DEL PROYECTO                   */}
