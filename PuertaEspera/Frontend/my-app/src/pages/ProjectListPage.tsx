@@ -7,7 +7,7 @@ import logo from './../assets/logoPuerta.svg';
 import { useTurnos } from './../context/TurnoContext';
 import { useSearchParams } from 'react-router-dom';
 import { ActiveTicketsList } from './../components/ActiveTicketsList';
-
+import flameLogo from './../assets/flame-icon.svg';
 import { Button } from './../components/ui/button';
 import { ProjectModal } from './../components/ProjectModal';
 
@@ -147,6 +147,11 @@ export function ProjectListPage() {
                     ))}
                 </div>
             )}
+
+            {/* Fueguito */}
+            <div className="mt-16 md:mt-24 ">
+                <img src={flameLogo} alt="Puerta 18" className="w-24 md:w-48" />
+            </div>
 
             {/* --- MODALES --- */}
 

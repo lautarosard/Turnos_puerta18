@@ -120,7 +120,7 @@ export function StandAdminPage() {
         if (!svg) return;
 
         const svgData = new XMLSerializer().serializeToString(svg);
-        const canvas = document.createElement("canvas");
+        //const canvas = document.createElement("canvas");
         //const ctx = canvas.getContext("2d");
         const img = new Image();
 
