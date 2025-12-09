@@ -8,6 +8,11 @@ export interface ProyectoResponse {
     duracionEstimada?: number;
     capacidadMaxima?: number;
     imagenUrl?: string | null;
+    adminEncargado?: {
+        id: string;
+        nombre: string;
+        username: string;
+    };
 }
 
 export interface CreateProjectRequest {

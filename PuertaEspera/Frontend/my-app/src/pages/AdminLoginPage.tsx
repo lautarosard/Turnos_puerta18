@@ -35,15 +35,19 @@ export function AdminLoginPage() {
                 console.log("3. Buscando stand asignado...");
                 // Buscamos cuál es su stand
                 try {
-                    const misProyectos = await getProyectos();
-                    console.log("4. Proyectos encontrados:", misProyectos); // <--- ESTO ES LO IMPORTANTE
+                    const todosLosProyectos = await getProyectos();
+                    
+                    // --- CORRECCIÓN AQUÍ ---
+                    // Buscamos el proyecto donde el adminEncargado coincida con el usuario logueado
+                    const miStand = todosLosProyectos.find(p => p.adminEncargado?.id === data.user.id);
 
-                    if (misProyectos && misProyectos.length > 0) {
-                        console.log("5. Redirigiendo al stand:", misProyectos[0].id);
-                        navigate(`/admin/stand/${misProyectos[0].id}`);
+                    if (miStand) {
+                        console.log("5. Redirigiendo a TU stand:", miStand.nombre);
+                        navigate(`/admin/stand/${miStand.id}`);
                     } else {
-                        console.warn("ERROR: Lista de proyectos vacía");
+                        console.warn("ERROR: Admin sin stand asignado");
                         setError('No tienes ningún stand asignado. Pide al Super Admin que te asigne uno.');
+                        // Si no tiene stand, borramos el token para que no quede logueado en el limbo
                         localStorage.removeItem('token_admin');
                     }
                 } catch (err) {
