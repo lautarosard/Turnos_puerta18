@@ -39,7 +39,7 @@ export function AdminLoginPage() {
                     
                     // --- CORRECCIÓN AQUÍ ---
                     // Buscamos el proyecto donde el adminEncargado coincida con el usuario logueado
-                    const miStand = todosLosProyectos.find(p => p.adminEncargado?.id === data.user.id);
+                    const miStand = todosLosProyectos.find(p => p.adminEncargadoId === data.user.id);
 
                     if (miStand) {
                         console.log("5. Redirigiendo a TU stand:", miStand.nombre);
