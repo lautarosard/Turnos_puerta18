@@ -7,6 +7,8 @@ import { Turno, EstadoTurno } from '../../Infrastructure/database/client.js';
 import { TurnoRequest } from '../models/Requests/TurnoRequest.js';
 import { IProyectoRepository } from '../../Domain/repositories/IProyectoRepository.js';
 import { ConflictError } from '../exceptions/AppError.js';
+import redis from '../../Infrastructure/database/redis/redis.js';
+
 export class TurnoService implements ITurnoService {
     constructor(
         private turnoRepository: ITurnoRepository,
@@ -36,7 +38,8 @@ export class TurnoService implements ITurnoService {
         }
 
         const genteEnElStand = await this.turnoRepository.countActiveByProject(request.proyectoId);
-
+        // --- 2. GENERAMOS EL NÚMERO CON REDIS (ATÓMICO) ---
+        const nuevoNumero = await redis.incr(`counter:${request.proyectoId}`);
         // Si es Taller (>1) y está lleno, rebotamos
         if (proyectoVerificado.capacidadMaxima > 1 && genteEnElStand >= proyectoVerificado.capacidadMaxima) {
             throw new Error(`El cupo para esta función está completo (${proyectoVerificado.capacidadMaxima} personas). Espera a que termine la actividad actual.`);
@@ -45,7 +48,8 @@ export class TurnoService implements ITurnoService {
         // 3. Crear el turno
         const nuevoTurno = await this.turnoRepository.create({
             visitanteId: request.visitanteId,
-            proyectoId: request.proyectoId
+            proyectoId: request.proyectoId,
+            numero: nuevoNumero
         });
 
         // 4. --- NUEVO CÁLCULO DE TIEMPO ---

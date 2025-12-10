@@ -9,6 +9,9 @@ import { updateProyectoRequest } from '../models/Requests/updateProyectoRequest.
 import { ProyectoResponse } from '../models/Responses/ProyectoResponse.js';
 import { Proyecto } from '../../Infrastructure/database/client.js';
 import { ClientError, NotFoundError } from '../exceptions/AppError.js';
+import redis from '../../Infrastructure/database/redis/redis.js';
+
+
 export class ProyectoService implements IProyectoService {
     constructor(private proyectoRepository: IProyectoRepository) { }
 
@@ -33,6 +36,8 @@ export class ProyectoService implements IProyectoService {
             adminEncargadoId: adminId // <--- ¡AQUÍ ASIGNAMOS EL ADMIN!
         });
 
+        // 2. BORRAMOS LA CACHÉ AL CREAR (Para que aparezca el nuevo)
+        await redis.del('todos_los_proyectos');
         // 3. Convertimos la Entidad de DB a Response DTO
         return this.mapToResponse(nuevoProyecto);
     }
@@ -41,9 +46,21 @@ export class ProyectoService implements IProyectoService {
    * OBTENER TODOS
    */
     async getAll(): Promise<ProyectoResponse[]> {
+        const CACHE_KEY = 'todos_los_proyectos';
+
+        // A. INTENTAMOS LEER DE REDIS
+        const cachedData = await redis.get(CACHE_KEY);
+        if (cachedData) {
+            console.log("⚡ Sirviendo Proyectos desde Redis Cache");
+            return JSON.parse(cachedData);
+        }
+        // B. SI NO HAY CACHÉ, LEEMOS DE LA BASE DE DATOS
         const proyectos = await this.proyectoRepository.getAll();
         // Mapeamos el array entero
-        return proyectos.map(p => this.mapToResponse(p));
+        const mappedProjects = proyectos.map(p => this.mapToResponse(p));
+        // C. GUARDAMOS EN REDIS
+        await redis.set(CACHE_KEY, JSON.stringify(mappedProjects), 'EX', 60);
+        return mappedProjects;
     }
 
     /**
@@ -70,8 +87,10 @@ export class ProyectoService implements IProyectoService {
     async update(id: string, data: Partial<updateProyectoRequest>): Promise<ProyectoResponse | null> {
         // Nota: Aquí idealmente deberíamos verificar si el usuario es dueño del proyecto
         // antes de actualizar, pero por ahora lo dejamos simple.
-
         const proyectoActualizado = await this.proyectoRepository.update(id, data);
+        if (proyectoActualizado) {
+            await redis.del('todos_los_proyectos');
+        }
         if (!proyectoActualizado) return null;
         return this.mapToResponse(proyectoActualizado);
     }
@@ -81,6 +100,9 @@ export class ProyectoService implements IProyectoService {
    */
     async delete(id: string): Promise<ProyectoResponse | null> {
         const proyectoEliminado = await this.proyectoRepository.delete(id);
+        if (proyectoEliminado) {
+            await redis.del('todos_los_proyectos');
+        }
         if (!proyectoEliminado) return null;
         return this.mapToResponse(proyectoEliminado);
     }

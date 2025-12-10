@@ -2,7 +2,7 @@ import { Turno, EstadoTurno } from "./../../Infrastructure/database/client.js";
 
 export interface ITurnoRepository {
 
-    create(data: { visitanteId: string; proyectoId: string }): Promise<Turno>;
+    create(data: { visitanteId: string; proyectoId: string; numero: number }): Promise<Turno>;
 
     getByProyectoId(proyectoId: string): Promise<Turno[]>;
 

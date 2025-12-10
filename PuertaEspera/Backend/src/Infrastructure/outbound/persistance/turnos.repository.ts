@@ -2,23 +2,12 @@ import { ITurnoRepository } from "../../../Domain/repositories/ITurnosRepository
 import { prisma, Turno, EstadoTurno } from "../../database/client.js";
 
 export class PrismaTurnosRepository implements ITurnoRepository {
-    async create(data: { visitanteId: string; proyectoId: string }): Promise<Turno> {
-        const lastTurn = await prisma.turno.findFirst({
-            where: {
-                proyectoId: data.proyectoId
-            },
-            orderBy: {
-                numero: "desc"
-            }
-        });
-
-        const postTurn = (lastTurn?.numero || 0) + 1;
-
+    async create(data: { visitanteId: string; proyectoId: string; numero: number }): Promise<Turno> {
         return await prisma.turno.create({
             data: {
                 visitanteId: data.visitanteId,
                 proyectoId: data.proyectoId,
-                numero: postTurn
+                numero: data.numero
             },
             include: {
                 visitante: true
