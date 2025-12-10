@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from './ui/button';
 import { ingresarVisitante } from '../services/visitanteService';
 import { solicitarTurno } from '../services/turnoService';
@@ -12,7 +12,11 @@ interface Props {
 export function AddManualVisitorModal({ isOpen, onClose, proyectoId }: Props) {
     const [nombre, setNombre] = useState('');
     const [loading, setLoading] = useState(false);
-
+    
+    const [mensajeExito, setMensajeExito] = useState('');
+    
+    // Referencia para volver a enfocar el input después de agregar
+    const inputRef = useRef<HTMLInputElement>(null);
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -20,6 +24,7 @@ export function AddManualVisitorModal({ isOpen, onClose, proyectoId }: Props) {
         if (!nombre.trim()) return;
 
         setLoading(true);
+        setMensajeExito('');
         try {
             // 1. Crear el Visitante (usamos el servicio público, no importa)
             // Esto nos devuelve el ID del nuevo visitante
@@ -29,8 +34,16 @@ export function AddManualVisitorModal({ isOpen, onClose, proyectoId }: Props) {
             // Como estamos logueados como ADMIN, el backend nos deja pasar el 'visitanteId'
             await solicitarTurno(proyectoId, dataVisitante.visitante.id);
 
-            alert(`¡${nombre} agregado a la fila con éxito!`);
+            setMensajeExito(`✓ ${nombre} agregado`);
             setNombre('');
+
+            // D. Mantenemos el foco en el input para seguir escribiendo sin usar el mouse
+            setTimeout(() => {
+                inputRef.current?.focus();
+                // Opcional: Borrar el mensaje de éxito después de 2 segundos
+                setTimeout(() => setMensajeExito(''), 2000);
+            }, 100);
+
             onClose();
 
         } catch (error: any) {
