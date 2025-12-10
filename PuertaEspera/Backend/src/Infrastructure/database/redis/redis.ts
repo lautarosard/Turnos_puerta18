@@ -10,7 +10,6 @@ if (!process.env.REDIS_URL) {
 
 const redis = new Redis(process.env.REDIS_URL, {
     // Estas opciones hacen la conexión más robusta en la nube
-    family: 6, // Forzamos IPv6 (necesario a veces en Render/Upstash)
     retryStrategy: (times) => Math.min(times * 50, 2000),
     tls: {
         rejectUnauthorized: false // A veces necesario para evitar errores de certificados SSL
