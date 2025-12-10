@@ -59,7 +59,7 @@ export class ProyectoService implements IProyectoService {
         // Mapeamos el array entero
         const mappedProjects = proyectos.map(p => this.mapToResponse(p));
         // C. GUARDAMOS EN REDIS
-        await redis.set(CACHE_KEY, JSON.stringify(mappedProjects), 'EX', 60);
+        await redis.set(CACHE_KEY, JSON.stringify(mappedProjects), 'EX', 120);
         return mappedProjects;
     }
 
