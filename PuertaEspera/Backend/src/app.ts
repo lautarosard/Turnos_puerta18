@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import { swaggerDocs } from './config/swagger.js';
 
 // 2. Llama a .config() INMEDIATAMENTE para cargar el .env
 dotenv.config();
@@ -90,7 +91,7 @@ const proyectoRouter = createProyectoRoutes(proyectoController);
 const turnoRepository = new PrismaTurnosRepository();
 
 // ¡OJO AQUÍ! Le pasamos el 'io' que creamos arriba
-const turnoService = new TurnoService(turnoRepository, io, proyectoRepository); 
+const turnoService = new TurnoService(turnoRepository, io, proyectoRepository);
 
 const turnoController = new TurnoController(turnoService);
 const turnoRouter = createTurnoRoutes(turnoController);
@@ -108,5 +109,6 @@ app.use(errorMiddleware);
 
 httpServer.listen(PORT, () => {
     console.log(`Servidor (con Sockets) escuchando en puerto ${PORT}`);
+    swaggerDocs(app, PORT);
 });
 export { io };

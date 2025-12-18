@@ -21,6 +21,8 @@
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.2",
     "socket.io": "^4.8.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
@@ -30,6 +32,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.1",
     "@types/socket.io": "^3.0.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/uuid": "^10.0.0",
     "dotenv": "^17.2.3",
     "nodemon": "^3.1.11",
@@ -45,6 +49,7 @@
     "onlyBuiltDependencies": [
       "@prisma/client",
       "@prisma/engines",
+      "@scarf/scarf",
       "bcrypt",
       "esbuild",
       "prisma"
