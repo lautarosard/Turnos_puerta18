@@ -11,6 +11,9 @@
     <a href="https://puerta-espera.vercel.app/">
       <img src="https://img.shields.io/badge/LIVE_DEMO-b54640?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
     </a>
+    <a href="https://appturnos-backend.onrender.com/docs">
+      <img src="https://img.shields.io/badge/DOCS-b54640?style=for-the-badge&logo=swagger&logoColor=white" alt="Live Demo" />
+    </a>
     <a href="#-flujo-de-concurrencia">
       <img src="https://img.shields.io/badge/VER_ARQUITECTURA-0f0706?style=for-the-badge&logo=redis&logoColor=white" alt="Architecture" />
     </a>
